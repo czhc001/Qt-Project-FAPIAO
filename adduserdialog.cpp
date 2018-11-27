@@ -1,7 +1,7 @@
 ﻿#include "adduserdialog.h"
 #include "ui_adduserdialog.h"
 #include <QDebug>
-
+//的撒大
 AddUserDialog::AddUserDialog(int userid, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddUserDialog)
