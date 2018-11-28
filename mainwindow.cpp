@@ -38,7 +38,7 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     started = false;
     firstStarted = true;
     checking_current = false;
-    isLastStable = false;
+    unstablePassed = true;
     ready_for_current = true;
     initializa_UI();
 }
@@ -121,16 +121,15 @@ void MainWindow::on_Button_start_clicked()
 
 void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
     ui->label_image->setText(QString::number(image));
-    if(ready_for_current){                                  //如果没有未处理完的数据
-        if(isRunning && started && stable){                 //如果正在运行 且 结果稳定
+    if(ready_for_current){
+        if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
                 ready_for_current = false;
                 current_code = message0;
                 current_no = message1;
-                if(!isLastStable){
-                    ui->lineEdit_coderesult->setText(current_code);
-                    ui->lineEdit_noresult->setText(current_no);
-                }
+                ui->lineEdit_coderesult->setText(current_code);
+                ui->lineEdit_noresult->setText(current_no);
+                unstablePassed = false;
                 if(!ui->lineEdit_coderesult->isEnabled())
                     ui->lineEdit_coderesult->setEnabled(true);
                 if(!ui->lineEdit_noresult->isEnabled())
@@ -143,7 +142,8 @@ void MainWindow::on_New_Message(bool stable, QString message0, QString message1,
             ui->lineEdit_noresult->setEnabled(false);
         }
     }
-    isLastStable = stable;
+    if(!stable)
+        unstablePassed = true;
 }
 
 void MainWindow::on_Query_Result(QNetworkReply* reply){
@@ -201,7 +201,7 @@ void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
     ui->Button_start->setEnabled(true);
     ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
-    ui->Button_start->setEnabled(false);
+    ui->Button_check->setEnabled(false);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     isRunning = false;
     started = false;
@@ -265,10 +265,12 @@ void MainWindow::on_Button_check_clicked(){
         url_str.append("&invoicenumber=");
         url_str.append(current_no);
         request.setUrl(QUrl(url_str));
+        qDebug() << url_str;
         QNetworkAccessManager *manager = new QNetworkAccessManager(this);
         QNetworkReply *reply = manager->get(request);
         connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(on_Query_Result(QNetworkReply*)));
     }
+
 }
 
 void MainWindow::on_lineEdit_coderesult_editingFinished()

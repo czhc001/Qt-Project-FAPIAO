@@ -17,7 +17,7 @@ void Invoice::run(){
                 a = (a+1)%1000000;
                 b = (b+3)%1000000;
                 ++c;
-                std::cout << a << "___" << b << std::endl;
+                //std::cout << a << "___" << b << std::endl;
                 if(a % 30 > 15)
                     message(true, a, b, c);
                 else

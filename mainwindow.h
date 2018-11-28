@@ -53,7 +53,7 @@ private:
     bool firstStarted;
     bool checking_current;
     bool new_message;
-    bool isLastStable;
+    bool unstablePassed;
     bool ready_for_current;
     QMutex start_mutex;
     QMutex check_mutex;
