@@ -64,11 +64,11 @@ void AddUserDialog::addUserResult(QNetworkReply* reply){
                     if(dataObj.isBool()){  //判断是否是对象
                         bool isSuccessful = dataObj.toBool();
                         if(isSuccessful){
-                            ui->label_hint->setText(QString::fromLocal8Bit("用户 ").append(username).append(QString::fromLocal8Bit(" 注册成功")));
+                            ui->label_hint->setText(QString::fromLocal8Bit("用户 ").append(username).append(QString::fromLocal8Bit(" 添加成功")));
                             emit user_Added(username);
                         }
                         else{
-                            ui->label_hint->setText(QString::fromLocal8Bit("注册失败"));
+                            ui->label_hint->setText(QString::fromLocal8Bit("添加用户失败"));
                         }
                     }
                 }

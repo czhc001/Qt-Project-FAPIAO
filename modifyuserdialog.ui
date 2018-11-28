@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>480</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,44 +16,64 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>200</y>
-     <width>80</width>
-     <height>21</height>
+     <x>180</x>
+     <y>220</y>
+     <width>120</width>
+     <height>40</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>确定</string>
+    <string>确定修改</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_passwords">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>150</y>
-     <width>151</width>
-     <height>21</height>
+     <x>200</x>
+     <y>120</y>
+     <width>181</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_username">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>110</y>
-     <width>151</width>
-     <height>21</height>
+     <x>200</x>
+     <y>80</y>
+     <width>181</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
    </property>
   </widget>
   <widget class="QLabel" name="label_username">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>115</y>
-     <width>63</width>
-     <height>13</height>
+     <x>100</x>
+     <y>80</y>
+     <width>91</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>用户名：</string>
@@ -62,11 +82,16 @@
   <widget class="QLabel" name="label_passwords">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>154</y>
-     <width>63</width>
-     <height>13</height>
+     <x>100</x>
+     <y>120</y>
+     <width>91</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>新密码：</string>
@@ -76,13 +101,24 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>180</y>
-     <width>63</width>
-     <height>13</height>
+     <y>170</y>
+     <width>180</width>
+     <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 0, 0);</string>
+   </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

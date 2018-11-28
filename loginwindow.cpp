@@ -4,6 +4,7 @@
 
 LoginWindow::LoginWindow(QWidget *parent) :
     QMainWindow(parent),
+
     ui(new Ui::LoginWindow)
 {
     ui->setupUi(this);
@@ -72,7 +73,7 @@ void LoginWindow::replyFinished(QNetworkReply* reply)
                         }
                     }
                     else if(dataObj.isBool()){
-                        ui->label_hint->setText(QString::fromLocal8Bit("错误的用户名或密码"));
+                        ui->label_hint->setText(QString::fromLocal8Bit("用户名或密码错误"));
                     }
                 }
             }
