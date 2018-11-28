@@ -39,6 +39,7 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     firstStarted = true;
     checking_current = false;
     isLastStable = false;
+    ready_for_current = true;
     initializa_UI();
 }
 
@@ -120,22 +121,27 @@ void MainWindow::on_Button_start_clicked()
 
 void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
     ui->label_image->setText(QString::number(image));
-    if(isRunning && started && ! checking_current && stable){
-        new_message = true;
-        current_code = message0;
-        current_no = message1;
-        if(!isLastStable){
-            ui->lineEdit_coderesult->setText(current_code);
-            ui->lineEdit_noresult->setText(current_no);
+    if(ready_for_current){                                  //如果没有未处理完的数据
+        if(isRunning && started && stable){                 //如果正在运行 且 结果稳定
+                new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
+                ready_for_current = false;
+                current_code = message0;
+                current_no = message1;
+                if(!isLastStable){
+                    ui->lineEdit_coderesult->setText(current_code);
+                    ui->lineEdit_noresult->setText(current_no);
+                }
+                if(!ui->lineEdit_coderesult->isEnabled())
+                    ui->lineEdit_coderesult->setEnabled(true);
+                if(!ui->lineEdit_noresult->isEnabled())
+                    ui->lineEdit_noresult->setEnabled(true);
         }
-        if(!ui->lineEdit_coderesult->isEnabled())
-            ui->lineEdit_coderesult->setEnabled(true);
-        if(!ui->lineEdit_noresult->isEnabled())
-            ui->lineEdit_noresult->setEnabled(true);
-    }
-    else{
-        ui->lineEdit_coderesult->setEnabled(false);
-        ui->lineEdit_noresult->setEnabled(false);
+        else{                                               //如果未运行 或 结果不稳定
+            ui->lineEdit_coderesult->setText("");
+            ui->lineEdit_noresult->setText("");
+            ui->lineEdit_coderesult->setEnabled(false);
+            ui->lineEdit_noresult->setEnabled(false);
+        }
     }
     isLastStable = stable;
 }
@@ -186,9 +192,10 @@ void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no
     ui->Button_start->setEnabled(true);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     ui->Button_check->setEnabled(true);
-    ui->lineEdit_coderesult->setEnabled(true);
-    ui->lineEdit_noresult->setEnabled(true);
+    //ui->lineEdit_coderesult->setEnabled(true);
+    //ui->lineEdit_noresult->setEnabled(true);
     checking_current = false;
+    ready_for_current = true;
 }
 
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
@@ -199,6 +206,7 @@ void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no)
     isRunning = false;
     started = false;
     checking_current = false;
+    ready_for_current = true;
 }
 
 void MainWindow::on_Begin_Reply(QNetworkReply* reply){

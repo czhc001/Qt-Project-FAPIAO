@@ -54,6 +54,7 @@ private:
     bool checking_current;
     bool new_message;
     bool isLastStable;
+    bool ready_for_current;
     QMutex start_mutex;
     QMutex check_mutex;
 
