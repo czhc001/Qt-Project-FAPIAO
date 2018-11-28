@@ -9,20 +9,25 @@ Invoice::Invoice()
 void Invoice::run(){
     int a = 0;
     int b = 1;
+    long c = 0;
     while(true){
         while(running){
-            for(int i = 0; i < 600000000; ++i);
+            for(int i = 0; i < 90000000; ++i);
             if(running){
-                a = (a)%185;
-                b = (b+1)%2000;
+                a = (a+1)%1000000;
+                b = (b+3)%1000000;
+                ++c;
                 std::cout << a << "___" << b << std::endl;
-                message(a, b);
+                if(a % 30 > 15)
+                    message(true, a, b, c);
+                else
+                    message(false, a, b, c);
             }
         }
     }
 }
 
 
-void Invoice::message(int, int){
+void Invoice::message(bool, int, int, long){
 
 }

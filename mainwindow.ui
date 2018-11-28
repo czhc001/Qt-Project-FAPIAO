@@ -43,7 +43,9 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <pointsize>40</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="autoFillBackground">

@@ -33,11 +33,12 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImage()));
     timer->start(50);
     control = new MyController();
-    connect(control, SIGNAL(newMessage(QString, QString)), this, SLOT(on_New_Message(QString, QString)));
+    connect(control, SIGNAL(newMessage(bool, QString, QString, long)), this, SLOT(on_New_Message(bool, QString, QString, long)));
     isRunning = false;
     started = false;
     firstStarted = true;
     checking_current = false;
+    isLastStable = false;
     initializa_UI();
 }
 
@@ -117,14 +118,26 @@ void MainWindow::on_Button_start_clicked()
     }
 }
 
-void MainWindow::on_New_Message(QString message0, QString message1){
-    if(isRunning && started && ! checking_current){
+void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
+    ui->label_image->setText(QString::number(image));
+    if(isRunning && started && ! checking_current && stable){
         new_message = true;
         current_code = message0;
         current_no = message1;
-        ui->lineEdit_coderesult->setText(current_code);
-        ui->lineEdit_noresult->setText(current_no);
+        if(!isLastStable){
+            ui->lineEdit_coderesult->setText(current_code);
+            ui->lineEdit_noresult->setText(current_no);
+        }
+        if(!ui->lineEdit_coderesult->isEnabled())
+            ui->lineEdit_coderesult->setEnabled(true);
+        if(!ui->lineEdit_noresult->isEnabled())
+            ui->lineEdit_noresult->setEnabled(true);
     }
+    else{
+        ui->lineEdit_coderesult->setEnabled(false);
+        ui->lineEdit_noresult->setEnabled(false);
+    }
+    isLastStable = stable;
 }
 
 void MainWindow::on_Query_Result(QNetworkReply* reply){
@@ -143,7 +156,7 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
                     if(dataObj.isBool()){
                         bool result = dataObj.toBool();
                         if(result){
-                            on_YesRule(userid, versionid, current_code, current_no);
+                            on_Yes_Rule(userid, versionid, current_code, current_no);
                         }
                         else{
 
@@ -155,8 +168,8 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
                             isRunning = false;
                             ui->Button_start->setEnabled(false);
                             YesruleDialog *dialog = new YesruleDialog(userid, versionid, current_code, current_no);
-                            connect(dialog, SIGNAL(NoRule(int, int, QString, QString)), this, SLOT(on_NoRule(int, int, QString, QString)));
-                            connect(dialog, SIGNAL(YesRule(int, int, QString, QString)), this, SLOT(on_YesRule(int, int, QString, QString)));
+                            connect(dialog, SIGNAL(NoRule(int, int, QString, QString)), this, SLOT(on_No_Rule(int, int, QString, QString)));
+                            connect(dialog, SIGNAL(YesRule(int, int, QString, QString)), this, SLOT(on_Yes_Rule(int, int, QString, QString)));
                             dialog->show();
                         }
                     }
@@ -169,18 +182,20 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
     }
 }
 
-void MainWindow::on_YesRule(int userid, int versionid, QString code, QString no){
+void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no){
     ui->Button_start->setEnabled(true);
-    ui->Button_check->setText(QString::fromLocal8Bit("检  测"));
+    ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     ui->Button_check->setEnabled(true);
     ui->lineEdit_coderesult->setEnabled(true);
     ui->lineEdit_noresult->setEnabled(true);
     checking_current = false;
 }
 
-void MainWindow::on_NoRule(int userid, int versionid, QString code, QString no){
+void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
     ui->Button_start->setEnabled(true);
     ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
+    ui->Button_start->setEnabled(false);
+    ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     isRunning = false;
     started = false;
     checking_current = false;
@@ -206,6 +221,8 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
 
                         isRunning = true;
                         if(firstStarted){
+                            ui->Button_start->setEnabled(true);
+                            ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
                             control->start();
                             firstStarted = false;
                         }

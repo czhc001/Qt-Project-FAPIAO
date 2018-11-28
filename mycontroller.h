@@ -18,12 +18,12 @@ class MyController: public QThread_Mid, public Invoice
     Q_OBJECT
 public:
     MyController();
-    void message(int, int);
+    void message(bool, int, int, long);
     void run_1();
 private:
 
 signals:
-    void newMessage(QString, QString);
+    void newMessage(bool, QString, QString, long);
 };
 
 #endif // MYCONTROLLER_H

@@ -12,11 +12,11 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     this->permissionid = permissionid;
     ui->setupUi(this);
     dataModel = new QStandardItemModel();
-    dataModel->setColumnCount(4);
+    dataModel->setColumnCount(2);
     dataModel->setHeaderData(USERNAME_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("用户名"));
-    dataModel->setHeaderData(PERMISSIONID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("权限"));
+    //dataModel->setHeaderData(PERMISSIONID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("权限"));
     dataModel->setHeaderData(ID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("ID"));
-    dataModel->setHeaderData(PASSWORDS_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("密码"));
+    //dataModel->setHeaderData(PASSWORDS_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("密码"));
     ui->tableView_userInfo->setModel(dataModel);
     connect(ui->tableView_userInfo->selectionModel(),
             SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)),
@@ -81,16 +81,16 @@ void ManagementWindow::obtainAllUser(QNetworkReply* reply){
                             qDebug() << current_username << ": " << current_password;
                             QList<QStandardItem *> list;
                             QStandardItem * item_username = new QStandardItem(current_username);
-                            QStandardItem * item_permissionid = new QStandardItem();
+                            //QStandardItem * item_permissionid = new QStandardItem();
                             QStandardItem * item_userid = new QStandardItem();
-                            QStandardItem * item_passwords = new QStandardItem(current_password);
-                            item_permissionid->setData(QVariant(current_permissionid),Qt::EditRole);
+                            //QStandardItem * item_passwords = new QStandardItem(current_password);
+                            //item_permissionid->setData(QVariant(current_permissionid),Qt::EditRole);
                             item_userid->setData(QVariant(current_userid),Qt::EditRole);
 
                             list.append(item_username);
-                            list.append(item_permissionid);
+                            //list.append(item_permissionid);
                             list.append(item_userid);
-                            list.append(item_passwords);
+                            //list.append(item_passwords);
 
                             dataModel->appendRow(list);
                         }
@@ -143,7 +143,7 @@ void ManagementWindow::on_Button_deleteUser_clicked()
 
     QList<int> selected_uids;
     for(int i = 0; i < selected_index.size(); ++i){
-        int current_uid = dataModel->index(selected_index.at(i), 2).data().toInt();
+        int current_uid = dataModel->index(selected_index.at(i), ID_COLUMN).data().toInt();
         selected_uids.append(current_uid);
         qDebug() << selected_index.at(i) << ": " << current_uid;
     }

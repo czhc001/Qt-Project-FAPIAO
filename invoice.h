@@ -6,7 +6,7 @@ class Invoice
 public:
     Invoice();
     void run();
-    virtual void message(int, int);
+    virtual void message(bool, int, int, long);
 private:
     bool running;
 };

@@ -24,11 +24,11 @@ private slots:
     void updateImage();
 
     void on_Button_start_clicked();
-    void on_New_Message(QString, QString);
+    void on_New_Message(bool, QString, QString, long);
     void on_Begin_Reply(QNetworkReply*);
     void on_Query_Result(QNetworkReply*);
-    void on_YesRule(int, int, QString, QString);
-    void on_NoRule(int, int, QString, QString);
+    void on_Yes_Rule(int, int, QString, QString);
+    void on_No_Rule(int, int, QString, QString);
 
     void on_Button_check_clicked();
 
@@ -53,6 +53,7 @@ private:
     bool firstStarted;
     bool checking_current;
     bool new_message;
+    bool isLastStable;
     QMutex start_mutex;
     QMutex check_mutex;
 

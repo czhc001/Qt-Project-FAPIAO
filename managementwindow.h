@@ -41,8 +41,8 @@ private:
     int to_delete_item_count;
     const int USERNAME_COLUMN = 0;
     const int PERMISSIONID_COLUMN = 1;
-    const int ID_COLUMN = 2;
-    const int PASSWORDS_COLUMN = 3;
+    const int ID_COLUMN = 1;
+    const int PASSWORDS_COLUMN = 1;
 
 };
 
