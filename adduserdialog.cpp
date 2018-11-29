@@ -24,11 +24,18 @@ void AddUserDialog::on_regButton_clicked()
 {
     username = ui->lineEdit_username->text();
     passwords = ui->lineEdit_passwords->text();
+    int max_len = 40;
     if(username.isEmpty()){
         ui->label_hint->setText(QString::fromLocal8Bit("用户名不能为空"));
     }
     else if(passwords.isEmpty()){
         ui->label_hint->setText(QString::fromLocal8Bit("密码不能为空"));
+    }
+    else if(username.size() > 40){
+        ui->label_hint->setText(QString::fromLocal8Bit("用户名过长"));
+    }
+    else if(passwords.size() > 40){
+        ui->label_hint->setText(QString::fromLocal8Bit("密码过长"));
     }
     else{
         ui->label_hint->setText(QString::fromLocal8Bit("注册中"));
@@ -70,7 +77,7 @@ void AddUserDialog::addUserResult(QNetworkReply* reply){
                             emit user_Added(username);
                             timer = new QTimer(this);
                             connect(timer, SIGNAL(timeout()), this, SLOT(on_TimerClose()));
-                            timer->start(600);
+                            timer->start(400);
                         }
                         else{
                             ui->label_hint->setText(QString::fromLocal8Bit("添加用户失败"));

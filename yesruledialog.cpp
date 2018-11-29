@@ -129,10 +129,19 @@ void YesruleDialog::on_No(QNetworkReply* reply){
                         ui->label_hint->setText(QString::fromLocal8Bit("已确认不合规"));
                         ui->Button_no->setEnabled(false);
                         ui->Button_yes->setEnabled(false);
+                        timer = new QTimer(this);
+                        connect(timer, SIGNAL(timeout()), this, SLOT(on_TimerClose()));
+                        timer->start(400);
                         return;
                     }
                 }
             }
         }
     }
+}
+
+void YesruleDialog::on_TimerClose(){
+    timer->stop();
+    delete timer;
+    close();
 }

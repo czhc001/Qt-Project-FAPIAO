@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QtNetwork>
+#include <QTimer>
 
 namespace Ui {
 class yesruleDialog;
@@ -27,12 +28,15 @@ private slots:
 
     void on_No(QNetworkReply*);
 
+    void on_TimerClose();
+
 private:
     Ui::yesruleDialog *ui;
     int userid;
     int versionid;
     QString code;
     QString no;
+    QTimer *timer;
 
 signals:
     void NoRule(int userid, int versionid, QString code, QString no);

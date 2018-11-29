@@ -32,6 +32,9 @@ void ModifyUserDialog::on_pushButton_clicked()
     else if(passwords.isEmpty()){
         ui->label_hint->setText(QString::fromLocal8Bit("密码不能为空"));
     }
+    else if(passwords.size() > 40){
+        ui->label_hint->setText(QString::fromLocal8Bit("密码过长"));
+    }
     else{
         ui->label_hint->setText(QString::fromLocal8Bit("修改中"));
         QNetworkRequest request;
@@ -74,7 +77,7 @@ void ModifyUserDialog::modifyUserResult(QNetworkReply* reply){
                             emit modifiedUser(username);
                             timer = new QTimer();
                             connect(timer, SIGNAL(timeout()), this, SLOT(on_TimerClose()));
-                            timer->start(600);
+                            timer->start(400);
                         }
                         else{
                             ui->label_hint->setText(QString::fromLocal8Bit("修改失败"));

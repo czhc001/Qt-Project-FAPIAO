@@ -43,6 +43,15 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     unstablePassed = true;
     ready_for_current = true;
     QDateTime dateTime = QDateTime::currentDateTime();
+    QRegExp wx_code("[0-9]{12} ");
+    QRegExp wx_no("[0-9]{8} ");
+    QRegExpValidator *latitude = new QRegExpValidator(wx_code, this);
+    QRegExpValidator *latitude_ = new QRegExpValidator(wx_no, this);
+    ui->lineEdit_coderesult->setValidator(latitude);
+    ui->lineEdit_noresult->setValidator(latitude_);
+    ui->lineEdit_coderesult->setEnabled(false);
+    ui->lineEdit_noresult->setEnabled(false);
+    ui->Button_check->setEnabled(false);
     ui->dateEdit->setDateTime(dateTime);
     initializa_UI();
     ui->lineEdit_coderesult->setAttribute(Qt::WA_InputMethodEnabled, false);
@@ -81,7 +90,27 @@ void MainWindow::updateImage(){
 void MainWindow::on_Button_start_clicked()
 {
     QMutexLocker locker(&start_mutex);
+
+
+
     if(!started){
+        if(ui->lineEdit_department->text().isEmpty() || ui->lineEdit_manage->text().isEmpty() || ui->lineEdit_serialnumber->text().isEmpty()){
+            ui->label_hint->setText(QString::fromLocal8Bit("请填写上方信息后开始"));
+            return;
+        }
+        if(ui->lineEdit_manage->text().size() > 20){
+            ui->label_hint->setText(QString::fromLocal8Bit("经办人名字过长"));
+            return;
+        }
+        if(ui->lineEdit_department->text().size() > 20){
+            ui->label_hint->setText(QString::fromLocal8Bit("部门名字过长"));
+            return;
+        }
+        if(ui->lineEdit_serialnumber->text().size() > 20){
+            ui->label_hint->setText(QString::fromLocal8Bit("编号过长"));
+            return;
+        }
+        ui->label_hint->setText("");
         started = true;
         QString dep = ui->lineEdit_department->text();
         QString ser = ui->lineEdit_serialnumber->text();
@@ -116,17 +145,28 @@ void MainWindow::on_Button_start_clicked()
         ui->lineEdit_serialnumber->setEnabled(true);
         ui->lineEdit_manage->setEnabled(true);
         ui->dateEdit->setEnabled(true);
+        ui->Button_check->setEnabled(false);
+        ui->Button_check->setText(QString::fromLocal8Bit("检测合规"));
         ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
+        ui->Button_start->setEnabled(true);
+        ui->lineEdit_noresult->setText("");
+        ui->lineEdit_coderesult->setText("");
         isRunning = false;
         started = false;
+        checking_current = false;
+        unstablePassed = true;
+        ready_for_current = true;
     }
 }
 
 void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
     QMutexLocker locker(&message_mutex);
+    //if(message0.size() != 12 || message1.size() != 8)
+    //    return;
     ui->label_image->setText(QString::number(image));
     qDebug() << ready_for_current;
     if(ready_for_current){
+        qDebug() << isRunning << " " << started << " " << stable << " " << unstablePassed;
         if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
                 ready_for_current = false;
@@ -139,6 +179,7 @@ void MainWindow::on_New_Message(bool stable, QString message0, QString message1,
                     ui->lineEdit_coderesult->setEnabled(true);
                 if(!ui->lineEdit_noresult->isEnabled())
                     ui->lineEdit_noresult->setEnabled(true);
+                ui->Button_check->setEnabled(true);
                 qDebug() << 1;
         }
         else{                                               //如果未运行 或 结果不稳定
@@ -209,22 +250,30 @@ void MainWindow::on_AlertClosed(){
     ui->Button_start->setEnabled(true);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     ui->Button_check->setEnabled(true);
+    ui->Button_check->setEnabled(false);
     //ui->lineEdit_coderesult->setEnabled(true);
     //ui->lineEdit_noresult->setEnabled(true);
     qDebug() << "on_AlertClosed";
     checking_current = false;
     ready_for_current = true;
+    isRunning = true;
 }
 
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
-    ui->Button_start->setEnabled(true);
-    ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
+    ui->lineEdit_department->setEnabled(true);
+    ui->lineEdit_serialnumber->setEnabled(true);
+    ui->lineEdit_manage->setEnabled(true);
+    ui->dateEdit->setEnabled(true);
     ui->Button_check->setEnabled(false);
-    ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
+    ui->Button_check->setText(QString::fromLocal8Bit("检测合规"));
+    ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
+    ui->Button_start->setEnabled(true);
+    ui->lineEdit_noresult->setText("");
+    ui->lineEdit_coderesult->setText("");
     isRunning = false;
     started = false;
     checking_current = false;
-    qDebug() << "on_No_Rule";
+    unstablePassed = true;
     ready_for_current = true;
 }
 
@@ -267,6 +316,13 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
 void MainWindow::on_Button_check_clicked(){
     QMutexLocker locker(&check_mutex);
     if(isRunning && !checking_current && new_message){
+        current_code = ui->lineEdit_coderesult->text();
+        current_no = ui->lineEdit_noresult->text();
+        if(current_code.size() != 12 || current_no.size() != 8){
+            ui->label_result->setText(QString::fromLocal8Bit("请输入正确的发票代码与号码"));
+            return;
+        }
+        ui->label_result->setText("");
         checking_current = true;
         new_message = false;
         ui->Button_check->setEnabled(false);
@@ -275,6 +331,7 @@ void MainWindow::on_Button_check_clicked(){
         ui->lineEdit_noresult->setEnabled(false);
         QNetworkRequest request;
         QString url_str;
+
         url_str.append("http://120.78.190.36:9601/queryrule?userid=");
         url_str.append(QString::number(userid));
         url_str.append("&versionid=");
