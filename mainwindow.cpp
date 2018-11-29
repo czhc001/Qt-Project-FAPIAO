@@ -3,6 +3,7 @@
 #include "managementwindow.h"
 #include "yesruledialog.h"
 #include <QFileDialog>
+#include "alertdialog.h"
 
 MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *parent) :
     QMainWindow(parent),
@@ -196,6 +197,8 @@ void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no
     //ui->lineEdit_noresult->setEnabled(true);
     checking_current = false;
     ready_for_current = true;
+    AlertDialog *alert = new AlertDialog();
+    alert->show();
 }
 
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){

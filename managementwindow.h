@@ -5,6 +5,7 @@
 #include <adduserdialog.h>
 #include <QStandardItemModel>
 #include <QtNetwork>
+#include "rrdialog.h"
 
 namespace Ui {
 class ManagementWindow;
@@ -28,6 +29,7 @@ private slots:
     void on_Button_deleteUser_clicked();
     void onCurrentRowChanged(const QModelIndex &, const QModelIndex &);
     void on_Button_modify_clicked();
+    void on_Yes_Remove();
 
 private:
     Ui::ManagementWindow *ui;
@@ -41,8 +43,10 @@ private:
     int to_delete_item_count;
     const int USERNAME_COLUMN = 0;
     const int PERMISSIONID_COLUMN = 1;
-    const int ID_COLUMN = 1;
-    const int PASSWORDS_COLUMN = 1;
+    const int ID_COLUMN = 3;
+    const int PASSWORDS_COLUMN = 2;
+    RRDialog *rdialog;
+    void hid();
 
 };
 

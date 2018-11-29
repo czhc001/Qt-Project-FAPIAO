@@ -18,6 +18,11 @@ public:
     void setText_1(QString);
 private:
     Ui::AlertDialog *ui;
+
+    QTimer *timer;
+    int time_left;
+private slots:
+    void updateText();
 };
 
 #endif // ALERTDIALOG_H

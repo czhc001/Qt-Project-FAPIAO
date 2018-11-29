@@ -1,6 +1,7 @@
 ﻿#include "managementwindow.h"
 #include "ui_managementwindow.h"
 #include "modifyuserdialog.h"
+#include "rrdialog.h"
 #include <QDebug>
 #include <QList>
 
@@ -14,10 +15,11 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     dataModel = new QStandardItemModel();
     dataModel->setColumnCount(2);
     dataModel->setHeaderData(USERNAME_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("用户名"));
-    //dataModel->setHeaderData(PERMISSIONID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("权限"));
+    dataModel->setHeaderData(PERMISSIONID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("权限"));
+    dataModel->setHeaderData(PASSWORDS_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("密码"));
     dataModel->setHeaderData(ID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("ID"));
-    //dataModel->setHeaderData(PASSWORDS_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("密码"));
     ui->tableView_userInfo->setModel(dataModel);
+    hid();
     connect(ui->tableView_userInfo->selectionModel(),
             SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)),
             this,
@@ -48,9 +50,7 @@ void ManagementWindow::addedNewUser(QString username){
 
 void ManagementWindow::deletedUser(QNetworkReply* reply){
     QMutexLocker locker(&mutex);
-    if(--to_delete_item_count == 0){
-        queryAllUser();
-    }
+    queryAllUser();
     delete reply;
 }
 
@@ -81,19 +81,20 @@ void ManagementWindow::obtainAllUser(QNetworkReply* reply){
                             qDebug() << current_username << ": " << current_password;
                             QList<QStandardItem *> list;
                             QStandardItem * item_username = new QStandardItem(current_username);
-                            //QStandardItem * item_permissionid = new QStandardItem();
+                            QStandardItem * item_permissionid = new QStandardItem();
                             QStandardItem * item_userid = new QStandardItem();
-                            //QStandardItem * item_passwords = new QStandardItem(current_password);
-                            //item_permissionid->setData(QVariant(current_permissionid),Qt::EditRole);
+                            QStandardItem * item_passwords = new QStandardItem(current_password);
+                            item_permissionid->setData(QVariant(current_permissionid),Qt::EditRole);
                             item_userid->setData(QVariant(current_userid),Qt::EditRole);
 
                             list.append(item_username);
-                            //list.append(item_permissionid);
+                            list.append(item_permissionid);
+                            list.append(item_passwords);
                             list.append(item_userid);
-                            //list.append(item_passwords);
 
                             dataModel->appendRow(list);
                         }
+                        hid();
                     }
                     else{
                         qDebug() << "No Array";
@@ -129,8 +130,13 @@ void ManagementWindow::queryAllUser(){
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(obtainAllUser(QNetworkReply*)));
 }
 
-void ManagementWindow::on_Button_deleteUser_clicked()
-{
+void ManagementWindow::on_Yes_Remove(){
+    QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
+    QModelIndex current_index = smodel->currentIndex();
+    QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
+    int selected_id = dataModel->index(current_index.row(), ID_COLUMN).data().toInt();
+    tryDeleteUser(selected_id);
+    /*
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndexList indexs = smodel->selectedRows();
     qDebug() << "";
@@ -151,6 +157,41 @@ void ManagementWindow::on_Button_deleteUser_clicked()
     for(int i = 0; i < selected_uids.size(); ++i){
         tryDeleteUser(selected_uids.at(i));
     }
+    */
+    //delete rdialog;
+}
+
+void ManagementWindow::on_Button_deleteUser_clicked()
+{
+    QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
+    QModelIndex current_index = smodel->currentIndex();
+    QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
+    int selected_id = dataModel->index(current_index.row(), ID_COLUMN).data().toInt();
+    rdialog = new RRDialog(selected_username);
+    connect(rdialog, SIGNAL(yes()), this, SLOT(on_Yes_Remove()));
+    rdialog->show();
+    /*
+    QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
+    QModelIndexList indexs = smodel->selectedRows();
+    qDebug() << "";
+
+    QList<int > selected_index;
+    for(int i = 0; i < indexs.size(); ++i){
+        selected_index.append(indexs.at(i).row());
+    }
+    qSort(selected_index.begin(), selected_index.end());
+
+    QList<int> selected_uids;
+    for(int i = 0; i < selected_index.size(); ++i){
+        int current_uid = dataModel->index(selected_index.at(i), ID_COLUMN).data().toInt();
+        selected_uids.append(current_uid);
+        qDebug() << selected_index.at(i) << ": " << current_uid;
+    }
+    to_delete_item_count = selected_index.size();
+    for(int i = 0; i < selected_uids.size(); ++i){
+        tryDeleteUser(selected_uids.at(i));
+    }
+    */
 }
 
 void ManagementWindow::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & previous){
@@ -177,7 +218,6 @@ void ManagementWindow::on_Button_modify_clicked()
     QModelIndex current_index = smodel->currentIndex();
 
     QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
-    QString selected_passwords = dataModel->index(current_index.row(), PASSWORDS_COLUMN).data().toString();
     int selected_id = dataModel->index(current_index.row(), ID_COLUMN).data().toInt();
     ModifyUserDialog * modifyUserDialog = new ModifyUserDialog(userid, selected_id, selected_username);
     connect(modifyUserDialog, SIGNAL(modifiedUser(QString)), this, SLOT(modifiedUser(QString)));
@@ -186,4 +226,10 @@ void ManagementWindow::on_Button_modify_clicked()
 
 void ManagementWindow::modifiedUser(QString username){
     queryAllUser();
+}
+
+void ManagementWindow::hid(){
+    ui->tableView_userInfo->setColumnHidden(PERMISSIONID_COLUMN,true);
+    ui->tableView_userInfo->setColumnHidden(ID_COLUMN,true);
+    ui->tableView_userInfo->setColumnHidden(PASSWORDS_COLUMN,true);
 }
