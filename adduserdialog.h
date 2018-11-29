@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QtNetwork>
+#include <QTimer>
 
 namespace Ui {
 class AddUserDialog;
@@ -22,12 +23,14 @@ signals:
 private slots:
     void on_regButton_clicked();
     void addUserResult(QNetworkReply*);
+    void on_TimerClose();
 
 private:
     Ui::AddUserDialog *ui;
     int userid;
     QString username;
     QString passwords;
+    QTimer * timer;
 };
 
 #endif // ADDUSERDIALOG_H

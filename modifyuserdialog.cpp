@@ -13,6 +13,8 @@ ModifyUserDialog::ModifyUserDialog(int userid_manager, int userid, QString usern
     this->userid_manager = userid_manager;
     this->userid = userid;
     this->ui->lineEdit_username->setText(username);
+    this->ui->lineEdit_username->setEnabled(false);
+    timer = nullptr;
 }
 
 ModifyUserDialog::~ModifyUserDialog()
@@ -70,6 +72,9 @@ void ModifyUserDialog::modifyUserResult(QNetworkReply* reply){
                         if(isSuccessful){
                             ui->label_hint->setText(QString::fromLocal8Bit("修改成功"));
                             emit modifiedUser(username);
+                            timer = new QTimer();
+                            connect(timer, SIGNAL(timeout()), this, SLOT(on_TimerClose()));
+                            timer->start(600);
                         }
                         else{
                             ui->label_hint->setText(QString::fromLocal8Bit("修改失败"));
@@ -80,4 +85,8 @@ void ModifyUserDialog::modifyUserResult(QNetworkReply* reply){
         }
     }
     delete reply;
+}
+
+void ModifyUserDialog::on_TimerClose(){
+    close();
 }

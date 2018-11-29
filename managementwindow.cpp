@@ -14,13 +14,19 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     this->userid = userid;
     this->permissionid = permissionid;
     ui->setupUi(this);
+
     dataModel = new QStandardItemModel();
-    dataModel->setColumnCount(2);
+    dataModel->setColumnCount(4);
     dataModel->setHeaderData(USERNAME_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("用户名"));
     dataModel->setHeaderData(PERMISSIONID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("权限"));
     dataModel->setHeaderData(PASSWORDS_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("密码"));
     dataModel->setHeaderData(ID_COLUMN, Qt::Horizontal, QString::fromLocal8Bit("ID"));
     ui->tableView_userInfo->setModel(dataModel);
+    ui->tableView_userInfo->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView_userInfo->setColumnWidth(0, 190);
+    ui->tableView_userInfo->setColumnWidth(1, 190);
+    ui->tableView_userInfo->setColumnWidth(2, 190);
+    ui->tableView_userInfo->setColumnWidth(3, 190);
     hid();
     connect(ui->tableView_userInfo->selectionModel(),
             SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)),
@@ -86,6 +92,12 @@ void ManagementWindow::obtainAllUser(QNetworkReply* reply){
                             QStandardItem * item_permissionid = new QStandardItem();
                             QStandardItem * item_userid = new QStandardItem();
                             QStandardItem * item_passwords = new QStandardItem(current_password);
+
+                            item_username->setTextAlignment(Qt::AlignCenter);
+                            item_permissionid->setTextAlignment(Qt::AlignCenter);
+                            item_userid->setTextAlignment(Qt::AlignCenter);
+                            item_passwords->setTextAlignment(Qt::AlignCenter);
+
                             item_permissionid->setData(QVariant(current_permissionid),Qt::EditRole);
                             item_userid->setData(QVariant(current_userid),Qt::EditRole);
 
@@ -167,6 +179,9 @@ void ManagementWindow::on_Button_deleteUser_clicked()
 {
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndex current_index = smodel->currentIndex();
+    qDebug() << current_index.row();
+    if(current_index.row() < 0)
+        return;
     QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
     int selected_id = dataModel->index(current_index.row(), ID_COLUMN).data().toInt();
     rdialog = new RRDialog(selected_username);
@@ -218,6 +233,8 @@ void ManagementWindow::on_Button_modify_clicked()
 {
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndex current_index = smodel->currentIndex();
+    if(current_index.row() < 0)
+        return;
 
     QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
     int selected_id = dataModel->index(current_index.row(), ID_COLUMN).data().toInt();
@@ -233,5 +250,5 @@ void ManagementWindow::modifiedUser(QString username){
 void ManagementWindow::hid(){
     ui->tableView_userInfo->setColumnHidden(PERMISSIONID_COLUMN,true);
     ui->tableView_userInfo->setColumnHidden(ID_COLUMN,true);
-    ui->tableView_userInfo->setColumnHidden(PASSWORDS_COLUMN,true);
+    //ui->tableView_userInfo->setColumnHidden(PASSWORDS_COLUMN,true);
 }

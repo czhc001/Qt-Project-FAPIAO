@@ -2,6 +2,7 @@
 #define RRDIALOG_H
 
 #include <QDialog>
+#include <QTimer>
 
 namespace Ui {
 class RRDialog;
@@ -19,8 +20,13 @@ signals:
 private slots:
     void on_pushButton_clicked();
 
+    void on_pushButton_2_clicked();
+
+    void on_TimerClosed();
+
 private:
     Ui::RRDialog *ui;
+    QTimer *timer;
 };
 
 #endif // RRDIALOG_H

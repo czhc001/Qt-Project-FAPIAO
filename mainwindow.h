@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QtNetwork>
 #include "mycontroller.h"
+#include "alertdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +37,8 @@ private slots:
 
     void on_lineEdit_noresult_editingFinished();
 
+    void on_AlertClosed();
+
 private:
     Ui::MainWindow *ui;
     int userid;
@@ -57,6 +60,8 @@ private:
     bool ready_for_current;
     QMutex start_mutex;
     QMutex check_mutex;
+    QMutex message_mutex;
+    AlertDialog *alert;
 
     MyController *control;
 

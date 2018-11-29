@@ -16,11 +16,16 @@ public:
     ~AlertDialog();
     void setText_0(QString);
     void setText_1(QString);
+protected:
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::AlertDialog *ui;
+    bool isClosed;
 
     QTimer *timer;
     int time_left;
+signals:
+    void closed();
 private slots:
     void updateText();
 };

@@ -1,5 +1,6 @@
 #include "alertdialog.h"
 #include "ui_alertdialog.h"
+#include <QCloseEvent>
 #include <QTimer>
 
 AlertDialog::AlertDialog(QWidget *parent) :
@@ -13,6 +14,7 @@ AlertDialog::AlertDialog(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(updateText()));
     time_left = 3;
     timer->start(1000);
+    isClosed = false;
 }
 
 AlertDialog::~AlertDialog()
@@ -28,13 +30,24 @@ void AlertDialog::setText_1(QString msg){
 
 }
 
+void AlertDialog::closeEvent(QCloseEvent *event){
+    if(!isClosed){
+        emit closed();
+        isClosed = true;
+    }
+    timer->stop();
+    QDialog::closeEvent(event);
+}
+
 void AlertDialog::updateText(){
     --time_left;
     QString str = "(";
     str.append(QString::number(time_left));
     str.append(")");
     ui->label->setText(str);
-    if(time_left <=0 )
+    if(time_left <=0 ){
+        timer->stop();
         this->close();
+    }
 }
 

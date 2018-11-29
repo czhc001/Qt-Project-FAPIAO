@@ -118,7 +118,9 @@ void MainWindow::on_Button_start_clicked()
 }
 
 void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
+    QMutexLocker locker(&message_mutex);
     ui->label_image->setText(QString::number(image));
+    qDebug() << ready_for_current;
     if(ready_for_current){
         if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
@@ -132,16 +134,21 @@ void MainWindow::on_New_Message(bool stable, QString message0, QString message1,
                     ui->lineEdit_coderesult->setEnabled(true);
                 if(!ui->lineEdit_noresult->isEnabled())
                     ui->lineEdit_noresult->setEnabled(true);
+                qDebug() << 1;
         }
         else{                                               //如果未运行 或 结果不稳定
             ui->lineEdit_coderesult->setText("");
             ui->lineEdit_noresult->setText("");
             ui->lineEdit_coderesult->setEnabled(false);
             ui->lineEdit_noresult->setEnabled(false);
+            qDebug() << 2;
+        }
+        if(!stable){
+            unstablePassed = true;
+            qDebug() << 3;
         }
     }
-    if(!stable)
-        unstablePassed = true;
+
 }
 
 void MainWindow::on_Query_Result(QNetworkReply* reply){
@@ -187,15 +194,21 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
 }
 
 void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no){
+
+    alert = new AlertDialog();
+    connect(alert, SIGNAL(closed()), this, SLOT(on_AlertClosed()));
+    alert->show();
+}
+
+void MainWindow::on_AlertClosed(){
     ui->Button_start->setEnabled(true);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     ui->Button_check->setEnabled(true);
     //ui->lineEdit_coderesult->setEnabled(true);
     //ui->lineEdit_noresult->setEnabled(true);
+    qDebug() << "on_AlertClosed";
     checking_current = false;
     ready_for_current = true;
-    AlertDialog *alert = new AlertDialog();
-    alert->show();
 }
 
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
@@ -206,6 +219,7 @@ void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no)
     isRunning = false;
     started = false;
     checking_current = false;
+    qDebug() << "on_No_Rule";
     ready_for_current = true;
 }
 

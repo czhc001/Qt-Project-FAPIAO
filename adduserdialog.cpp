@@ -12,6 +12,7 @@ AddUserDialog::AddUserDialog(int userid, QWidget *parent) :
     setFixedSize(this->width(), this->height());
     ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
+    timer = nullptr;
 }
 
 AddUserDialog::~AddUserDialog()
@@ -47,9 +48,6 @@ void AddUserDialog::on_regButton_clicked()
         //连接响应时返回数据信号
         //connect(reply, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
     }
-
-
-
 }
 
 void AddUserDialog::addUserResult(QNetworkReply* reply){
@@ -70,6 +68,9 @@ void AddUserDialog::addUserResult(QNetworkReply* reply){
                         if(isSuccessful){
                             ui->label_hint->setText(QString::fromLocal8Bit("用户 ").append(username).append(QString::fromLocal8Bit(" 添加成功")));
                             emit user_Added(username);
+                            timer = new QTimer(this);
+                            connect(timer, SIGNAL(timeout()), this, SLOT(on_TimerClose()));
+                            timer->start(600);
                         }
                         else{
                             ui->label_hint->setText(QString::fromLocal8Bit("添加用户失败"));
@@ -79,4 +80,10 @@ void AddUserDialog::addUserResult(QNetworkReply* reply){
             }
         }
     }
+    delete reply;
 }
+
+void AddUserDialog::on_TimerClose(){
+    close();
+}
+
