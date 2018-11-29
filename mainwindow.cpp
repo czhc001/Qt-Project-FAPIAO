@@ -3,6 +3,7 @@
 #include "managementwindow.h"
 #include "yesruledialog.h"
 #include <QFileDialog>
+#include <QDateTime>
 #include "alertdialog.h"
 
 MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *parent) :
@@ -41,6 +42,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     checking_current = false;
     unstablePassed = true;
     ready_for_current = true;
+    QDateTime dateTime = QDateTime::currentDateTime();
+    ui->dateEdit->setDateTime(dateTime);
     initializa_UI();
     ui->lineEdit_coderesult->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_noresult->setAttribute(Qt::WA_InputMethodEnabled, false);
