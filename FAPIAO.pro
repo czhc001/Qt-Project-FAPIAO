@@ -35,7 +35,8 @@ SOURCES += \
     modifyuserdialog.cpp \
     invoice.cpp \
     mycontroller.cpp \
-    yesruledialog.cpp
+    yesruledialog.cpp \
+    rrdialog.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -46,7 +47,8 @@ HEADERS += \
     modifyuserdialog.h \
     invoice.h \
     mycontroller.h \
-    yesruledialog.h
+    yesruledialog.h \
+    rrdialog.h
 
 FORMS += \
     mainwindow.ui \
@@ -55,7 +57,8 @@ FORMS += \
     managementwindow.ui \
     adduserdialog.ui \
     modifyuserdialog.ui \
-    yesruledialog.ui
+    yesruledialog.ui \
+    rrdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
