@@ -42,6 +42,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     unstablePassed = true;
     ready_for_current = true;
     initializa_UI();
+    ui->lineEdit_coderesult->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->lineEdit_noresult->setAttribute(Qt::WA_InputMethodEnabled, false);
 }
 
 MainWindow::~MainWindow()
@@ -51,16 +53,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::initializa_UI(){
     QPalette palette;
-    palette.setColor(QPalette::Background, Qt::darkGray);
-    this->setPalette(palette);
+//    palette.setColor(QPalette::Background, QColor(240,255,240));
+//    this->setPalette(palette);
 
-    palette.setColor(QPalette::Background, Qt::white);
-    ui->lineEdit_noresult->setAutoFillBackground(true);
-    ui->lineEdit_noresult->setPalette(palette);
-
-    palette.setColor(QPalette::Background, Qt::white);
-    ui->lineEdit_coderesult->setAutoFillBackground(true);
-    ui->lineEdit_coderesult->setPalette(palette);
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
 }
 
 void MainWindow::on_Button_manage_clicked()

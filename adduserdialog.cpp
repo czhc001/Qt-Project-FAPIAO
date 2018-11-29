@@ -8,6 +8,10 @@ AddUserDialog::AddUserDialog(int userid, QWidget *parent) :
 {
     ui->setupUi(this);
     this->userid = userid;
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
+    ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
 }
 
 AddUserDialog::~AddUserDialog()

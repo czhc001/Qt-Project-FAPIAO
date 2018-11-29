@@ -6,6 +6,8 @@ YesruleDialog::YesruleDialog(int userid, int versionid, QString code, QString no
     ui(new Ui::yesruleDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
     this->userid = userid;
     this->versionid = versionid;
     this->code = code;

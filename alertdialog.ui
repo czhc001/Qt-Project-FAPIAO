@@ -6,40 +6,56 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
-    <height>112</height>
+    <width>480</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>合规</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icon.qrc">
+    <normaloff>:/image/icon.png</normaloff>:/image/icon.png</iconset>
   </property>
   <widget class="QLabel" name="label_0">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>40</y>
-     <width>51</width>
+     <x>160</x>
+     <y>130</y>
+     <width>101</width>
      <height>41</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>检测合格</string>
+    <string>发票合规</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>55</y>
-     <width>63</width>
-     <height>13</height>
+     <x>260</x>
+     <y>130</y>
+     <width>51</width>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>(3)</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icon.qrc"/>
+ </resources>
  <connections/>
 </ui>

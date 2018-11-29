@@ -6,6 +6,10 @@ ModifyUserDialog::ModifyUserDialog(int userid_manager, int userid, QString usern
     ui(new Ui::ModifyUserDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
+    ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
     this->userid_manager = userid_manager;
     this->userid = userid;
     this->ui->lineEdit_username->setText(username);

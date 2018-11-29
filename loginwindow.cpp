@@ -8,11 +8,25 @@ LoginWindow::LoginWindow(QWidget *parent) :
     ui(new Ui::LoginWindow)
 {
     ui->setupUi(this);
+    initializa_UI();
+    ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
 }
+
 
 LoginWindow::~LoginWindow()
 {
     delete ui;
+}
+
+void LoginWindow::initializa_UI(){
+    QPalette palette;
+//    palette.setColor(QPalette::Background, QColor(240,255,240));
+//    this->setPalette(palette);
+    //限制窗口缩放
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
+
 }
 
 void LoginWindow::on_loginButton_clicked()

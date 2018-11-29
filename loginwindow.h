@@ -28,6 +28,7 @@ private:
     Ui::LoginWindow *ui;
     AlertDialog *alertDialog;
     QString username;
+    void initializa_UI();
 
 };
 

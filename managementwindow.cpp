@@ -9,6 +9,8 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     QMainWindow(parent),
     ui(new Ui::ManagementWindow)
 {
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
     this->userid = userid;
     this->permissionid = permissionid;
     ui->setupUi(this);

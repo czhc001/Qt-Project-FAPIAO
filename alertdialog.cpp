@@ -7,6 +7,8 @@ AlertDialog::AlertDialog(QWidget *parent) :
     ui(new Ui::AlertDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateText()));
     time_left = 3;
