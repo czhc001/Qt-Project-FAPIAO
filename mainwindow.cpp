@@ -47,6 +47,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     initializa_UI();
     ui->lineEdit_coderesult->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_noresult->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->lineEdit_serialnumber->setAttribute(Qt::WA_InputMethodEnabled, false);
+    ui->dateEdit->setAttribute(Qt::WA_InputMethodEnabled, false);
 }
 
 MainWindow::~MainWindow()
