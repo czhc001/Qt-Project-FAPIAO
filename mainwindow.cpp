@@ -165,9 +165,7 @@ void MainWindow::on_New_Message(QString message0, QString message1, Mat image, b
     QMutexLocker locker(&message_mutex);
     //if(message0.size() != 12 || message1.size() != 8)
     //    return;
-    QImage img = MatToQImage(image);
-    QPixmap pimg = QPixmap::fromImage(img);
-    pimg = pimg.scaled(ui->label_image->size(), Qt::KeepAspectRatio);
+
     ui->label_image->setPixmap(pimg);
     //qDebug() << ready_for_current;
     //qDebug() << image.size().width << "  " << image.size().height << " " << ui->label_image->width() << " " << ui->label_image->height();
@@ -175,6 +173,9 @@ void MainWindow::on_New_Message(QString message0, QString message1, Mat image, b
         qDebug() << "STABLE!!!";
     }
     if(ready_for_current){
+        QImage img = MatToQImage(image);
+        QPixmap pimg = QPixmap::fromImage(img);
+        pimg = pimg.scaled(ui->label_image->size(), Qt::KeepAspectRatio);
         //qDebug() << isRunning << " " << started << " " << stable << " " << unstablePassed;
         if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
