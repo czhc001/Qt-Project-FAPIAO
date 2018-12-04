@@ -386,6 +386,7 @@ void OCRecognizer::run() {
 				}
 				tmp1 = sum1;
 				tmp2 = sum2;
+                std::cout << "??? " << sum1 << " " << sum2 << std::endl;
 				message(sum1, sum2, image, resflag);
 			}
 		}

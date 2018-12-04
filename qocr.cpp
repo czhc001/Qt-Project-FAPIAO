@@ -29,9 +29,14 @@ QOcr::~QOcr()
 }
 
 void QOcr::message(string sum1,string sum2, Mat image,bool flag){
+    std::cout << "!!! " << sum1 << " " << sum2 << std::endl;
     QString m1 = QString::fromStdString(sum1);
     QString m2 = QString::fromStdString(sum2);
     //qDebug() << QString("!!!") << m1 << QString("!!!") <<m2;
     //qDebug() << "QOcr emited";
     emit newMessage(m1, m2, image, flag);
+}
+
+void QOcr::falsemessage(int a){
+    std::cout << "error" << a << std::endl;
 }

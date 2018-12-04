@@ -11,8 +11,10 @@ public:
     QOcr();
     virtual ~QOcr();
     void message(string sum1,string sum2, Mat image,bool flag);
+    void falsemessage(int a);
 signals:
     void newMessage(QString sum1,QString sum2, Mat image,bool flag);
+
 };
 
 #endif // QOCR_H
