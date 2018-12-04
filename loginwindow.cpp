@@ -7,8 +7,10 @@ LoginWindow::LoginWindow(QWidget *parent) :
 
     ui(new Ui::LoginWindow)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
     initializa_UI();
+    suc = false;
     ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
 }
@@ -42,7 +44,7 @@ void LoginWindow::on_loginButton_clicked()
         ui->label_hint->setText(QString::fromLocal8Bit("密码不能为空"));
     }
     else{
-        ui->label_hint->setText("login...");
+        ui->label_hint->setText(QString::fromLocal8Bit("登录中"));
         this->username = username;
         QNetworkRequest request;
         QString url_str;
@@ -62,6 +64,7 @@ void LoginWindow::on_loginButton_clicked()
 
 void LoginWindow::replyFinished(QNetworkReply* reply)
 {
+    QMutexLocker locker(&mutex);
     QByteArray data = reply->readAll();
     QString result = QString::fromStdString(data.toStdString()).toUtf8();
     qDebug() << result;
@@ -81,9 +84,12 @@ void LoginWindow::replyFinished(QNetworkReply* reply)
                             int permissionid = ObjectData0.value("permissionid").toInt();
                             int userid = ObjectData0.value("userid").toInt();
                             qDebug() << permissionid << " : " << userid;
-                            MainWindow * mainwindow = new MainWindow(userid, permissionid, username);
-                            mainwindow->show();
-                            this->close();
+                            if(!suc){
+                                MainWindow * mainwindow = new MainWindow(userid, permissionid, username);
+                                mainwindow->show();
+                                suc = true;
+                                this->close();
+                            }
                         }
                     }
                     else if(dataObj.isBool()){

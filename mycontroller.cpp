@@ -1,16 +1,25 @@
 #include "mycontroller.h"
-#include <QDebug>w
+#include <QDebug>
 
 MyController::MyController()
 {
+    qocr = new QOcr();
+    connect(qocr, SIGNAL(newMessage(QString, QString, Mat, bool)), this, SLOT(onMessage(QString, QString, Mat, bool)));
 }
 
-void MyController::message(bool s, int n0, int n1, long image){
-    QString str0 = QString::number(n0);
-    QString str1 = QString::number(n1);
-    emit newMessage(s, str0, str1, image);
+MyController::~MyController()
+{
+    qocr->stop();
+    this->wait();
+    delete qocr;
+    qDebug() << "delete MyController";
 }
 
-void MyController::run_1(){
-    Invoice::run();
+void MyController::onMessage(QString sum1,QString sum2, Mat image,bool flag){
+    //qDebug() << "MyController emited";
+    emit Message(sum1, sum2, image, flag);
+}
+
+void MyController::run(){
+    this->qocr->run();
 }

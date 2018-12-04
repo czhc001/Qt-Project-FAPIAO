@@ -33,10 +33,11 @@ SOURCES += \
     managementwindow.cpp \
     adduserdialog.cpp \
     modifyuserdialog.cpp \
-    invoice.cpp \
     mycontroller.cpp \
     yesruledialog.cpp \
-    rrdialog.cpp
+    rrdialog.cpp \
+    run.cpp \
+    qocr.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -45,10 +46,59 @@ HEADERS += \
     managementwindow.h \
     adduserdialog.h \
     modifyuserdialog.h \
-    invoice.h \
     mycontroller.h \
     yesruledialog.h \
-    rrdialog.h
+    rrdialog.h \
+    run.h \
+    head.h \
+    qocr.h
+
+
+INCLUDEPATH += "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\OpenCV.2.4.10\build\native\include\opencv2"
+INCLUDEPATH += "D:\Caffe\NugetPackages\OpenCV.2.4.10\build\native\include\opencv"
+INCLUDEPATH += "D:\Caffe\NugetPackages\OpenCV.2.4.10\build\native\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\OpenBLAS.0.2.14.1\lib\native\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\protobuf-v120.2.6.1\build\native\include\google"
+INCLUDEPATH += "D:\Caffe\NugetPackages\protobuf-v120.2.6.1\build\native\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\glog.0.3.3.0\build\native\include\glog"
+INCLUDEPATH += "D:\Caffe\NugetPackages\glog.0.3.3.0\build\native\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\gflags.2.1.2.1\build\native\include\gflags"
+INCLUDEPATH += "D:\Caffe\NugetPackages\gflags.2.1.2.1\build\native\include"
+INCLUDEPATH += "D:\Caffe\NugetPackages\boost.1.59.0.0\lib\native\include\boost"
+INCLUDEPATH += "D:\Caffe\NugetPackages\boost.1.59.0.0\lib\native\include"
+INCLUDEPATH += "D:\Caffe\caffe\include\caffe"
+INCLUDEPATH += "D:\Caffe\caffe\include"
+
+
+LIBS += -L$$PWD/lib -lopencv_calib3d2410
+LIBS += -L$$PWD/lib -lopencv_contrib2410
+LIBS += -L$$PWD/lib -lopencv_core2410
+LIBS += -L$$PWD/lib -lopencv_features2d2410
+LIBS += -L$$PWD/lib -lopencv_flann2410
+LIBS += -L$$PWD/lib -lopencv_gpu2410
+LIBS += -L$$PWD/lib -lopencv_highgui2410
+LIBS += -L$$PWD/lib -lopencv_imgproc2410
+LIBS += -L$$PWD/lib -lopencv_legacy2410
+LIBS += -L$$PWD/lib -lopencv_ml2410
+LIBS += -L$$PWD/lib -lopencv_objdetect2410
+LIBS += -L$$PWD/lib -lopencv_ts2410
+LIBS += -L$$PWD/lib -lopencv_video2410
+LIBS += -L$$PWD/lib -lcaffe
+LIBS += -L$$PWD/lib -llibcaffe
+LIBS += -L$$PWD/lib -llibglog
+LIBS += -L$$PWD/lib -lgflags
+LIBS += -L$$PWD/lib libopenblas.dll.a
+LIBS += -L$$PWD/lib -llibprotobuf
+LIBS += -L$$PWD/lib -lleveldb
+LIBS += -L$$PWD/lib -llmdb
+LIBS += -L$$PWD/lib -lhdf5
+LIBS += -L$$PWD/lib -lhdf5_hl
+LIBS += -L$$PWD/lib -llibboost_date_time-vc120-mt-1_59
+LIBS += -L$$PWD/lib -llibboost_filesystem-vc120-mt-1_59
+LIBS += -L$$PWD/lib -llibboost_system-vc120-mt-1_59
+LIBS += -L$$PWD/lib -llibboost_thread-vc120-mt-1_59
+LIBS += -L$$PWD/lib -llibboost_chrono-vc120-mt-1_59
 
 FORMS += \
     mainwindow.ui \
@@ -69,3 +119,5 @@ DISTFILES +=
 
 RESOURCES += \
     icon.qrc
+
+RC_ICONS = 512.ico

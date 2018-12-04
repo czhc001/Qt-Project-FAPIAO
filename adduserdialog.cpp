@@ -6,6 +6,7 @@ AddUserDialog::AddUserDialog(int userid, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddUserDialog)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
     this->userid = userid;
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);

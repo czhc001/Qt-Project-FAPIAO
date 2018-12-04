@@ -7,6 +7,7 @@
 #include <QtNetwork>
 #include "mycontroller.h"
 #include "alertdialog.h"
+//#include "opencv2/opencv.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -25,7 +26,7 @@ private slots:
     void updateImage();
 
     void on_Button_start_clicked();
-    void on_New_Message(bool, QString, QString, long);
+    void on_New_Message(QString, QString, Mat, bool);
     void on_Begin_Reply(QNetworkReply*);
     void on_Query_Result(QNetworkReply*);
     void on_Yes_Rule(int, int, QString, QString);
@@ -40,6 +41,7 @@ private slots:
     void on_AlertClosed();
 
 private:
+    QImage MatToQImage(const cv::Mat& mat);
     Ui::MainWindow *ui;
     int userid;
     int permissionid;

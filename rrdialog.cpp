@@ -5,6 +5,7 @@ RRDialog::RRDialog(QString username, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RRDialog)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());

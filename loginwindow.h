@@ -29,6 +29,8 @@ private:
     AlertDialog *alertDialog;
     QString username;
     void initializa_UI();
+    bool suc;
+    QMutex mutex;
 
 };
 

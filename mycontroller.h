@@ -1,29 +1,29 @@
 #ifndef MYCONTROLLER_H
 #define MYCONTROLLER_H
 
-#include "invoice.h"
+#include "run.h"
+#include "qocr.h"
 #include <QString>
 #include <QThread>
 
 
-class QThread_Mid: public QThread{
-    virtual void run_1() = 0;
-    void run(){
-        run_1();
-    }
-};
 
-class MyController: public QThread_Mid, public Invoice
+
+class MyController: public QThread
 {
     Q_OBJECT
 public:
     MyController();
-    void message(bool, int, int, long);
-    void run_1();
+    virtual ~MyController();
+    void run();
 private:
+    QOcr *qocr;
 
 signals:
-    void newMessage(bool, QString, QString, long);
+    void Message(QString sum1,QString sum2, Mat image,bool flag);
+
+private slots:
+    void onMessage(QString sum1,QString sum2, Mat image,bool flag);
 };
 
 #endif // MYCONTROLLER_H

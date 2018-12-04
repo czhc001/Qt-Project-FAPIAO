@@ -5,6 +5,7 @@ ModifyUserDialog::ModifyUserDialog(int userid_manager, int userid, QString usern
     QDialog(parent),
     ui(new Ui::ModifyUserDialog)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());

@@ -10,6 +10,7 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     this->userid = userid;
     this->username = username;
     this->permissionid = permissionid;
@@ -35,7 +36,7 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImage()));
     timer->start(50);
     control = new MyController();
-    connect(control, SIGNAL(newMessage(bool, QString, QString, long)), this, SLOT(on_New_Message(bool, QString, QString, long)));
+    connect(control, SIGNAL(Message(QString, QString, Mat, bool)), this, SLOT(on_New_Message(QString, QString, Mat, bool)));
     isRunning = false;
     started = false;
     firstStarted = true;
@@ -62,13 +63,14 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
 
 MainWindow::~MainWindow()
 {
+    delete control;
     delete ui;
 }
 
 void MainWindow::initializa_UI(){
     QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(240,255,240));
-//    this->setPalette(palette);
+    palette.setColor(QPalette::Background, QColor(25,25,25));
+    ui->label_image->setPalette(palette);
 
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
@@ -159,14 +161,21 @@ void MainWindow::on_Button_start_clicked()
     }
 }
 
-void MainWindow::on_New_Message(bool stable, QString message0, QString message1, long image){
+void MainWindow::on_New_Message(QString message0, QString message1, Mat image, bool stable){
     QMutexLocker locker(&message_mutex);
     //if(message0.size() != 12 || message1.size() != 8)
     //    return;
-    ui->label_image->setText(QString::number(image));
-    qDebug() << ready_for_current;
+    QImage img = MatToQImage(image);
+    QPixmap pimg = QPixmap::fromImage(img);
+    pimg = pimg.scaled(ui->label_image->size(), Qt::KeepAspectRatio);
+    ui->label_image->setPixmap(pimg);
+    //qDebug() << ready_for_current;
+    //qDebug() << image.size().width << "  " << image.size().height << " " << ui->label_image->width() << " " << ui->label_image->height();
+    if(stable){
+        qDebug() << "STABLE!!!";
+    }
     if(ready_for_current){
-        qDebug() << isRunning << " " << started << " " << stable << " " << unstablePassed;
+        //qDebug() << isRunning << " " << started << " " << stable << " " << unstablePassed;
         if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
                 ready_for_current = false;
@@ -180,18 +189,18 @@ void MainWindow::on_New_Message(bool stable, QString message0, QString message1,
                 if(!ui->lineEdit_noresult->isEnabled())
                     ui->lineEdit_noresult->setEnabled(true);
                 ui->Button_check->setEnabled(true);
-                qDebug() << 1;
+                //qDebug() << 1;
         }
         else{                                               //如果未运行 或 结果不稳定
             ui->lineEdit_coderesult->setText("");
             ui->lineEdit_noresult->setText("");
             ui->lineEdit_coderesult->setEnabled(false);
             ui->lineEdit_noresult->setEnabled(false);
-            qDebug() << 2;
+            //qDebug() << 2;
         }
         if(!stable){
             unstablePassed = true;
-            qDebug() << 3;
+            //qDebug() << 3;
         }
     }
 
@@ -364,4 +373,52 @@ void MainWindow::on_lineEdit_noresult_editingFinished()
         current_no = ui->lineEdit_noresult->text();
     }
 }
+
+QImage MainWindow::MatToQImage(const cv::Mat& mat)
+{
+    // 8-bits unsigned, NO. OF CHANNELS = 1
+    if(mat.type() == CV_8UC1)
+    {
+        QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
+        // Set the color table (used to translate colour indexes to qRgb values)
+        image.setColorCount(256);
+        for(int i = 0; i < 256; i++)
+        {
+            image.setColor(i, qRgb(i, i, i));
+        }
+        // Copy input Mat
+        uchar *pSrc = mat.data;
+        for(int row = 0; row < mat.rows; row ++)
+        {
+            uchar *pDest = image.scanLine(row);
+            memcpy(pDest, pSrc, mat.cols);
+            pSrc += mat.step;
+        }
+        return image;
+    }
+    // 8-bits unsigned, NO. OF CHANNELS = 3
+    else if(mat.type() == CV_8UC3)
+    {
+        // Copy input Mat
+        const uchar *pSrc = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        return image.rgbSwapped();
+    }
+    else if(mat.type() == CV_8UC4)
+    {
+        qDebug() << "CV_8UC4";
+        // Copy input Mat
+        const uchar *pSrc = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
+        return image.copy();
+    }
+    else
+    {
+        qDebug() << "ERROR: Mat could not be converted to QImage.";
+        return QImage();
+    }
+}
+
 

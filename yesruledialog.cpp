@@ -5,6 +5,7 @@ YesruleDialog::YesruleDialog(int userid, int versionid, QString code, QString no
     QDialog(parent),
     ui(new Ui::yesruleDialog)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());

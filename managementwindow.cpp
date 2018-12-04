@@ -9,6 +9,7 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     QMainWindow(parent),
     ui(new Ui::ManagementWindow)
 {
+    //setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
     this->userid = userid;
