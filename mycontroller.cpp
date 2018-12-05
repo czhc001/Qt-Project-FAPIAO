@@ -4,6 +4,7 @@
 MyController::MyController()
 {
     qocr = nullptr;
+    qRegisterMetaType<QPixmap>("QPixmap&");
 }
 
 MyController::~MyController()
@@ -16,8 +17,8 @@ MyController::~MyController()
     qDebug() << "delete MyController";
 }
 
-void MyController::onMessage(QString sum1,QString sum2, QPixmap image,bool flag){
-    qDebug() << "MyController emited";
+void MyController::onMessage(QString sum1,QString sum2, QPixmap &image,bool flag){
+    //qDebug() << "MyController emited";
     emit Message(sum1, sum2, image, flag);
 }
 
@@ -30,7 +31,7 @@ void MyController::run(){
     if(this->qocr == nullptr){
         qocr = new QOcr();
         qocr->setImageSize(this->imgsize);
-        connect(qocr, SIGNAL(newMessage(QString, QString, QPixmap, bool)), this, SLOT(onMessage(QString, QString, QPixmap, bool)));
+        connect(qocr, SIGNAL(newMessage(QString, QString, QPixmap &, bool)), this, SLOT(onMessage(QString, QString, QPixmap &, bool)));
         qocr->run();
     }
 }

@@ -6,7 +6,7 @@
 
 QOcr::QOcr()
 {
-    qRegisterMetaType<QPixmap>("QPixmap");
+    //qRegisterMetaType<QPixmap>("QPixmap");
     QString path = QCoreApplication::applicationDirPath();
     QString model0 = "/models/lenet.prototxt";
     QString model1 = "/models/lenet_iter_10000.caffemodel";
