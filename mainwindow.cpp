@@ -126,7 +126,7 @@ void MainWindow::on_Button_start_clicked()
 
     if(!started){
         if(ui->lineEdit_department->text().isEmpty() || ui->lineEdit_manage->text().isEmpty() || ui->lineEdit_serialnumber->text().isEmpty()){
-            ui->label_hint->setText(QString::fromLocal8Bit("请填写上方信息"));
+            ui->label_hint->setText(QString::fromLocal8Bit("请填写上方信息后开始"));
             return;
         }
         if(ui->lineEdit_manage->text().size() > 20){

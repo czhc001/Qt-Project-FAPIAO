@@ -26,7 +26,7 @@ void YesruleDialog::on_Button_yes_clicked()
 {
     QString text = ui->textEdit->toPlainText();
     if(text.isEmpty()){
-        ui->label_hint->setText(QString::fromLocal8Bit("备注不能为空"));
+        ui->label_hint->setText(QString::fromLocal8Bit("确认合规时备注不能为空"));
     }
     else {
         QNetworkRequest request;
@@ -78,7 +78,7 @@ void YesruleDialog::on_textEdit_textChanged()
         QTextCursor cursor = ui->textEdit->textCursor();
         cursor.setPosition(position-(length-maxLength));
         ui->textEdit->setTextCursor(cursor);
-        ui->label_hint->setText(QString::fromLocal8Bit("备注长度过长"));
+        ui->label_hint->setText(QString::fromLocal8Bit("备注长度达到极限"));
     }
     else{
         ui->label_hint->setText(QString::fromLocal8Bit(""));
