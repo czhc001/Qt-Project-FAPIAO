@@ -11,6 +11,7 @@ RRDialog::RRDialog(QString username, QWidget *parent) :
     setFixedSize(this->width(), this->height());
     ui->label_2->setText(username);
     timer = nullptr;
+    //setWindowFlags(windowFlags()&~Qt::WindowCloseButtonHint&~Qt::WindowContextHelpButtonHint);
 }
 
 RRDialog::~RRDialog()

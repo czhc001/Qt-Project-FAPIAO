@@ -13,6 +13,9 @@ LoginWindow::LoginWindow(QWidget *parent) :
     suc = false;
     ui->lineEdit_username->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_passwords->setAttribute(Qt::WA_InputMethodEnabled, false);
+
+    setTabOrder(ui->lineEdit_username, ui->lineEdit_passwords);
+    setTabOrder(ui->lineEdit_passwords, ui->loginButton);
 }
 
 
@@ -104,4 +107,15 @@ void LoginWindow::replyFinished(QNetworkReply* reply)
 void LoginWindow::on_readyRead()
 {
     //....
+}
+
+void LoginWindow::on_lineEdit_passwords_returnPressed()
+{
+    on_loginButton_clicked();
+}
+
+void LoginWindow::on_lineEdit_username_returnPressed()
+{
+    if(ui->lineEdit_username->text().size() > 0)
+        ui->lineEdit_passwords->setFocus();
 }

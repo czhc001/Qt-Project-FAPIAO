@@ -7,6 +7,7 @@
 #include <QtNetwork>
 #include "mycontroller.h"
 #include "alertdialog.h"
+#include <QKeyEvent>
 //#include "opencv2/opencv.hpp"
 
 namespace Ui {
@@ -20,6 +21,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(int userid, int permissionid, QString username, QWidget *parent = nullptr);
     ~MainWindow();
+protected:
+    void keyReleaseEvent(QKeyEvent *);
 
 private slots:
     void on_Button_manage_clicked();
@@ -39,6 +42,10 @@ private slots:
     void on_lineEdit_noresult_editingFinished();
 
     void on_AlertClosed();
+
+    void on_Manage_Closed();
+
+    void on_lineEdit_serialnumber_returnPressed();
 
 private:
     QImage MatToQImage(const cv::Mat& mat);
@@ -60,9 +67,12 @@ private:
     bool new_message;
     bool unstablePassed;
     bool ready_for_current;
+
+    bool manage_opened;
     QMutex start_mutex;
     QMutex check_mutex;
     QMutex message_mutex;
+    QMutex manage_mutex;
     AlertDialog *alert;
 
     MyController *control;

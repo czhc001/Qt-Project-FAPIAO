@@ -24,6 +24,10 @@ private slots:
     void replyFinished(QNetworkReply* reply);
     void on_readyRead();
 
+    void on_lineEdit_passwords_returnPressed();
+
+    void on_lineEdit_username_returnPressed();
+
 private:
     Ui::LoginWindow *ui;
     AlertDialog *alertDialog;

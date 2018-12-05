@@ -43,6 +43,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     checking_current = false;
     unstablePassed = true;
     ready_for_current = true;
+
+    manage_opened = false;
     QDateTime dateTime = QDateTime::currentDateTime();
     QRegExp wx_code("[0-9]{12} ");
     QRegExp wx_no("[0-9]{8} ");
@@ -59,6 +61,17 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     ui->lineEdit_noresult->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->lineEdit_serialnumber->setAttribute(Qt::WA_InputMethodEnabled, false);
     ui->dateEdit->setAttribute(Qt::WA_InputMethodEnabled, false);
+
+    setTabOrder(ui->dateEdit, ui->lineEdit_manage);
+    setTabOrder(ui->lineEdit_manage, ui->lineEdit_department);
+    setTabOrder(ui->lineEdit_department, ui->lineEdit_serialnumber);
+    setTabOrder(ui->lineEdit_serialnumber, ui->Button_start);
+    setTabOrder(ui->Button_start, ui->Button_check);
+    setTabOrder(ui->Button_check, ui->Button_manage);
+
+    ui->Button_check->setFocusPolicy(Qt::NoFocus);
+    ui->Button_manage->setFocusPolicy(Qt::NoFocus);
+    ui->Button_start->setFocusPolicy(Qt::NoFocus);
 }
 
 MainWindow::~MainWindow()
@@ -76,10 +89,26 @@ void MainWindow::initializa_UI(){
     setFixedSize(this->width(), this->height());
 }
 
+void MainWindow::keyReleaseEvent(QKeyEvent *ev){
+    if(ev->key() == Qt::Key_Space){
+        if(ui->Button_check->isEnabled())
+            on_Button_check_clicked();
+    }
+}
+
 void MainWindow::on_Button_manage_clicked()
 {
-    ManagementWindow * managementWindow = new ManagementWindow(userid, permissionid);
-    managementWindow->show();
+    QMutexLocker locker(&manage_mutex);
+    if(!manage_opened){
+        ManagementWindow * managementWindow = new ManagementWindow(userid, permissionid);
+        connect(managementWindow, SIGNAL(closed()), this, SLOT(on_Manage_Closed()));
+        managementWindow->show();
+        manage_opened = true;
+    }
+}
+
+void MainWindow::on_Manage_Closed(){
+    manage_opened = false;
 }
 
 void MainWindow::updateImage(){
@@ -162,6 +191,8 @@ void MainWindow::on_Button_start_clicked()
 }
 
 void MainWindow::on_New_Message(QString message0, QString message1, Mat image, bool stable){
+    //if(message0.size() != 12 || message1.size() != 8)
+    //    return;
     QMutexLocker locker(&message_mutex);
     //if(message0.size() != 12 || message1.size() != 8)
     //    return;
@@ -234,9 +265,10 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
                         if(QString::compare("norule", dataStr, Qt::CaseSensitive) == 0){
                             isRunning = false;
                             ui->Button_start->setEnabled(false);
-                            YesruleDialog *dialog = new YesruleDialog(userid, versionid, current_code, current_no);
+                            YesruleDialog *dialog = new YesruleDialog(userid, versionid, current_code, current_no, this);
                             connect(dialog, SIGNAL(NoRule(int, int, QString, QString)), this, SLOT(on_No_Rule(int, int, QString, QString)));
                             connect(dialog, SIGNAL(YesRule(int, int, QString, QString)), this, SLOT(on_Yes_Rule(int, int, QString, QString)));
+                            dialog->setModal(true);
                             dialog->show();
                         }
                     }
@@ -250,11 +282,12 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
 }
 
 void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no){
-
-    alert = new AlertDialog();
+    alert = new AlertDialog(this);
     connect(alert, SIGNAL(closed()), this, SLOT(on_AlertClosed()));
+    alert->setModal(true);
     alert->show();
 }
+
 
 void MainWindow::on_AlertClosed(){
     ui->Button_start->setEnabled(true);
@@ -423,3 +456,8 @@ QImage MainWindow::MatToQImage(const cv::Mat& mat)
 }
 
 
+
+void MainWindow::on_lineEdit_serialnumber_returnPressed()
+{
+    on_Button_start_clicked();
+}

@@ -2,7 +2,7 @@
 #include "ui_yesruledialog.h"
 
 YesruleDialog::YesruleDialog(int userid, int versionid, QString code, QString no, QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent,Qt::WindowTitleHint | Qt::CustomizeWindowHint),
     ui(new Ui::yesruleDialog)
 {
     //setAttribute(Qt::WA_DeleteOnClose);

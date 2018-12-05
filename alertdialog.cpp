@@ -13,7 +13,7 @@ AlertDialog::AlertDialog(QWidget *parent) :
     setFixedSize(this->width(), this->height());
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateText()));
-    time_left = 3;
+    time_left = 1;
     timer->start(1000);
     isClosed = false;
 }
