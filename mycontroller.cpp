@@ -3,23 +3,48 @@
 
 MyController::MyController()
 {
-    qocr = new QOcr();
-    connect(qocr, SIGNAL(newMessage(QString, QString, Mat, bool)), this, SLOT(onMessage(QString, QString, Mat, bool)));
+    qocr = nullptr;
 }
 
 MyController::~MyController()
 {
-    qocr->stop();
-    this->wait();
-    delete qocr;
+    if(qocr != nullptr){
+        qocr->stop();
+        this->wait();
+        delete qocr;
+    }
     qDebug() << "delete MyController";
 }
 
-void MyController::onMessage(QString sum1,QString sum2, Mat image,bool flag){
-    //qDebug() << "MyController emited";
+void MyController::onMessage(QString sum1,QString sum2, QPixmap image,bool flag){
+    qDebug() << "MyController emited";
     emit Message(sum1, sum2, image, flag);
 }
 
+void MyController::start(){
+    QMutexLocker locker(&mutex);
+    QThread::start();
+}
+
 void MyController::run(){
-    this->qocr->run();
+    if(this->qocr == nullptr){
+        qocr = new QOcr();
+        qocr->setImageSize(this->imgsize);
+        connect(qocr, SIGNAL(newMessage(QString, QString, QPixmap, bool)), this, SLOT(onMessage(QString, QString, QPixmap, bool)));
+        qocr->run();
+    }
+}
+
+void MyController::stop(){
+    QMutexLocker locker(&mutex);
+    if(qocr != nullptr){
+        qocr->stop();
+        this->wait();
+        delete qocr;
+        qocr = nullptr;
+    }
+}
+
+void MyController::setImageSize(QSize size){
+    imgsize = size;
 }

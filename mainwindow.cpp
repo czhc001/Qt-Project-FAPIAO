@@ -18,28 +18,11 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
 
     if(permissionid != 1)
         ui->Button_manage->setEnabled(false);
-    QString m_sProjectPath = tr("D:\\images");
-    QDir dir(m_sProjectPath);
-    dir.setFilter(QDir::Files);
-    QFileInfoList fileList = dir.entryInfoList();
-    int fileCount = fileList.count();
-    for(int i=0;i<fileCount;++i){
-        QString filepath = fileList[i].absoluteFilePath();
-        qDebug() << filepath;
-        QImage *img = new QImage(filepath);
-        image_list.append(img);
-    }
 
-
-    timer = new QTimer(this);
-    ii = 0;
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateImage()));
-    timer->start(50);
     control = new MyController();
-    connect(control, SIGNAL(Message(QString, QString, Mat, bool)), this, SLOT(on_New_Message(QString, QString, Mat, bool)));
+    control->setImageSize(ui->label_image->size());
+    connect(control, SIGNAL(Message(QString, QString, QPixmap, bool)), this, SLOT(on_New_Message(QString, QString, QPixmap, bool)));
     isRunning = false;
-    started = false;
-    firstStarted = true;
     checking_current = false;
     unstablePassed = true;
     ready_for_current = true;
@@ -72,6 +55,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     ui->Button_check->setFocusPolicy(Qt::NoFocus);
     ui->Button_manage->setFocusPolicy(Qt::NoFocus);
     ui->Button_start->setFocusPolicy(Qt::NoFocus);
+
+    qDebug() << 1;
 }
 
 MainWindow::~MainWindow()
@@ -83,10 +68,14 @@ MainWindow::~MainWindow()
 void MainWindow::initializa_UI(){
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(25,25,25));
+    palette.setColor(QPalette::WindowText, QColor(220,220,220));
     ui->label_image->setPalette(palette);
+    QFont font("Microsoft YaHei", 40, 50);
+    ui->label_image->setFont(font);
 
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
+
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *ev){
@@ -111,20 +100,11 @@ void MainWindow::on_Manage_Closed(){
     manage_opened = false;
 }
 
-void MainWindow::updateImage(){
-    //qDebug() << ii;
-
-    //ui->label_image->setPixmap(QPixmap::fromImage(*image_list.at(ii)));
-    //ii = (ii+1)%image_list.size();
-}
-
 void MainWindow::on_Button_start_clicked()
 {
     QMutexLocker locker(&start_mutex);
 
-
-
-    if(!started){
+    if(!isRunning){
         if(ui->lineEdit_department->text().isEmpty() || ui->lineEdit_manage->text().isEmpty() || ui->lineEdit_serialnumber->text().isEmpty()){
             ui->label_hint->setText(QString::fromLocal8Bit("请填写上方信息后开始"));
             return;
@@ -142,7 +122,7 @@ void MainWindow::on_Button_start_clicked()
             return;
         }
         ui->label_hint->setText("");
-        started = true;
+        isRunning = true;
         QString dep = ui->lineEdit_department->text();
         QString ser = ui->lineEdit_serialnumber->text();
         QString manager_name = ui->lineEdit_manage->text();
@@ -170,45 +150,24 @@ void MainWindow::on_Button_start_clicked()
         ui->lineEdit_manage->setEnabled(false);
         ui->dateEdit->setEnabled(false);
         ui->Button_start->setText(QString::fromLocal8Bit("结  束"));
+        ui->label_image->setText(QString::fromLocal8Bit("初始化中"));
     }
     else{
-        ui->lineEdit_department->setEnabled(true);
-        ui->lineEdit_serialnumber->setEnabled(true);
-        ui->lineEdit_manage->setEnabled(true);
-        ui->dateEdit->setEnabled(true);
-        ui->Button_check->setEnabled(false);
-        ui->Button_check->setText(QString::fromLocal8Bit("检测合规"));
-        ui->Button_start->setText(QString::fromLocal8Bit("开  始"));
-        ui->Button_start->setEnabled(true);
-        ui->lineEdit_noresult->setText("");
-        ui->lineEdit_coderesult->setText("");
-        isRunning = false;
-        started = false;
-        checking_current = false;
-        unstablePassed = true;
-        ready_for_current = true;
+        qDebug() << "STOP";
+        stop();
     }
 }
 
-void MainWindow::on_New_Message(QString message0, QString message1, Mat image, bool stable){
-    //if(message0.size() != 12 || message1.size() != 8)
-    //    return;
+void MainWindow::on_New_Message(QString message0, QString message1, QPixmap image, bool stable){
     QMutexLocker locker(&message_mutex);
-    //if(message0.size() != 12 || message1.size() != 8)
-    //    return;
-
-    //qDebug() << ready_for_current;
-    //qDebug() << image.size().width << "  " << image.size().height << " " << ui->label_image->width() << " " << ui->label_image->height();
-    if(stable){
+    if(!isRunning)
+        return;
+    if(stable)
         qDebug() << "STABLE!!!";
-    }
     if(ready_for_current){
-        QImage img = MatToQImage(image);
-        QPixmap pimg = QPixmap::fromImage(img);
-        pimg = pimg.scaled(ui->label_image->size(), Qt::KeepAspectRatio);
-        ui->label_image->setPixmap(pimg);
-        //qDebug() << isRunning << " " << started << " " << stable << " " << unstablePassed;
-        if(isRunning && started && stable && unstablePassed){                 //如果正在运行 且 结果稳定
+        ui->label_image->setPixmap(image);
+        //qDebug() << isRunning << " " << " " << stable << " " << unstablePassed;
+        if(isRunning && stable && unstablePassed){                 //如果正在运行 且 结果稳定
                 new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
                 ready_for_current = false;
                 current_code = message0;
@@ -263,8 +222,6 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
                     else if(dataObj.isString()){
                         QString dataStr = dataObj.toString();
                         if(QString::compare("norule", dataStr, Qt::CaseSensitive) == 0){
-                            isRunning = false;
-                            ui->Button_start->setEnabled(false);
                             YesruleDialog *dialog = new YesruleDialog(userid, versionid, current_code, current_no, this);
                             connect(dialog, SIGNAL(NoRule(int, int, QString, QString)), this, SLOT(on_No_Rule(int, int, QString, QString)));
                             connect(dialog, SIGNAL(YesRule(int, int, QString, QString)), this, SLOT(on_Yes_Rule(int, int, QString, QString)));
@@ -303,6 +260,13 @@ void MainWindow::on_AlertClosed(){
 }
 
 void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no){
+    stop();
+}
+
+void MainWindow::stop(){
+    control->stop();
+    qDebug() << "ocr stop";
+    ui->label_image->clear();
     ui->lineEdit_department->setEnabled(true);
     ui->lineEdit_serialnumber->setEnabled(true);
     ui->lineEdit_manage->setEnabled(true);
@@ -314,7 +278,6 @@ void MainWindow::on_No_Rule(int userid, int versionid, QString code, QString no)
     ui->lineEdit_noresult->setText("");
     ui->lineEdit_coderesult->setText("");
     isRunning = false;
-    started = false;
     checking_current = false;
     unstablePassed = true;
     ready_for_current = true;
@@ -339,12 +302,9 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
                         versionid = object.value("versionid").toInt();
 
                         isRunning = true;
-                        if(firstStarted){
-                            ui->Button_start->setEnabled(true);
-                            ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
-                            control->start();
-                            firstStarted = false;
-                        }
+                        ui->Button_start->setEnabled(true);
+                        ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
+                        control->start();
                     }
                     else if(dataObj.isBool()){
 
@@ -394,7 +354,7 @@ void MainWindow::on_Button_check_clicked(){
 
 void MainWindow::on_lineEdit_coderesult_editingFinished()
 {
-    if(isRunning && started && ! checking_current){
+    if(isRunning  && ! checking_current){
         new_message = true;
         current_code = ui->lineEdit_coderesult->text();
     }
@@ -402,58 +362,12 @@ void MainWindow::on_lineEdit_coderesult_editingFinished()
 
 void MainWindow::on_lineEdit_noresult_editingFinished()
 {
-    if(isRunning && started && ! checking_current){
+    if(isRunning  && ! checking_current){
         new_message = true;
         current_no = ui->lineEdit_noresult->text();
     }
 }
 
-QImage MainWindow::MatToQImage(const cv::Mat& mat)
-{
-    // 8-bits unsigned, NO. OF CHANNELS = 1
-    if(mat.type() == CV_8UC1)
-    {
-        QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
-        // Set the color table (used to translate colour indexes to qRgb values)
-        image.setColorCount(256);
-        for(int i = 0; i < 256; i++)
-        {
-            image.setColor(i, qRgb(i, i, i));
-        }
-        // Copy input Mat
-        uchar *pSrc = mat.data;
-        for(int row = 0; row < mat.rows; row ++)
-        {
-            uchar *pDest = image.scanLine(row);
-            memcpy(pDest, pSrc, mat.cols);
-            pSrc += mat.step;
-        }
-        return image;
-    }
-    // 8-bits unsigned, NO. OF CHANNELS = 3
-    else if(mat.type() == CV_8UC3)
-    {
-        // Copy input Mat
-        const uchar *pSrc = (const uchar*)mat.data;
-        // Create QImage with same dimensions as input Mat
-        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-        return image.rgbSwapped();
-    }
-    else if(mat.type() == CV_8UC4)
-    {
-        qDebug() << "CV_8UC4";
-        // Copy input Mat
-        const uchar *pSrc = (const uchar*)mat.data;
-        // Create QImage with same dimensions as input Mat
-        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
-        return image.copy();
-    }
-    else
-    {
-        qDebug() << "ERROR: Mat could not be converted to QImage.";
-        return QImage();
-    }
-}
 
 
 
