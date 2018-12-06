@@ -4,7 +4,7 @@
 #include "yesruledialog.h"
 #include <QFileDialog>
 #include <QDateTime>
-#include "alertdialog.h"
+//#include "alertdialog.h"
 
 MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *parent) :
     QMainWindow(parent),
@@ -27,7 +27,14 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     unstablePassed = true;
     ready_for_current = true;
 
+    current_count = 1;
+
     manage_opened = false;
+
+    ui->label_no_0->setText(QString::fromLocal8Bit("第"));
+    ui->label_no_1->setText(QString::fromLocal8Bit("张"));
+    ui->label_no_0->setVisible(false);
+    ui->label_no_1->setVisible(false);
     QDateTime dateTime = QDateTime::currentDateTime();
     QRegExp wx_code("[0-9]{12} ");
     QRegExp wx_no("[0-9]{8} ");
@@ -56,7 +63,6 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     ui->Button_manage->setFocusPolicy(Qt::NoFocus);
     ui->Button_start->setFocusPolicy(Qt::NoFocus);
 
-    qDebug() << 1;
 }
 
 MainWindow::~MainWindow()
@@ -72,6 +78,12 @@ void MainWindow::initializa_UI(){
     ui->label_image->setPalette(palette);
     QFont font("Microsoft YaHei", 40, 50);
     ui->label_image->setFont(font);
+
+    QPalette palette0;
+    palette0.setColor(QPalette::WindowText, Qt::green);
+    QFont font0("Microsoft YaHei", 17, 10);
+    ui->label_result->setPalette(palette0);
+    ui->label_result->setFont(font0);
 
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(), this->height());
@@ -239,17 +251,24 @@ void MainWindow::on_Query_Result(QNetworkReply* reply){
 }
 
 void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no){
-    alert = new AlertDialog(this);
-    connect(alert, SIGNAL(closed()), this, SLOT(on_AlertClosed()));
-    alert->setModal(true);
-    alert->show();
+    //alert = new AlertDialog(this);
+    //connect(alert, SIGNAL(closed()), this, SLOT(on_AlertClosed()));
+    //alert->setModal(true);
+    //alert->show();
+
+    ui->label_result->setText(QString::fromLocal8Bit("合  格"));
+    ++current_count;
+    timer.setSingleShot(true);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(on_AlertClosed()));
+    timer.start(700);
 }
 
 
 void MainWindow::on_AlertClosed(){
+    ui->label_no->setText(QString::number(current_count));
+    ui->label_result->clear();
     ui->Button_start->setEnabled(true);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
-    ui->Button_check->setEnabled(true);
     ui->Button_check->setEnabled(false);
     //ui->lineEdit_coderesult->setEnabled(true);
     //ui->lineEdit_noresult->setEnabled(true);
@@ -277,6 +296,10 @@ void MainWindow::stop(){
     ui->Button_start->setEnabled(true);
     ui->lineEdit_noresult->setText("");
     ui->lineEdit_coderesult->setText("");
+
+    ui->label_no_0->setVisible(false);
+    ui->label_no_1->setVisible(false);
+    ui->label_no->setVisible(false);
     isRunning = false;
     checking_current = false;
     unstablePassed = true;
@@ -302,8 +325,13 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
                         versionid = object.value("versionid").toInt();
 
                         isRunning = true;
+                        current_count = 1;
                         ui->Button_start->setEnabled(true);
                         ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
+                        ui->label_no_0->setVisible(true);
+                        ui->label_no_1->setVisible(true);
+                        ui->label_no->setText(QString::number(1));
+                        ui->label_no->setVisible(true);
                         control->start();
                     }
                     else if(dataObj.isBool()){

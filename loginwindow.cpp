@@ -70,7 +70,7 @@ void LoginWindow::replyFinished(QNetworkReply* reply)
     QMutexLocker locker(&mutex);
     QByteArray data = reply->readAll();
     QString result = QString::fromStdString(data.toStdString()).toUtf8();
-    qDebug() << result;
+    qDebug() << "login result: "<< result;
     QJsonDocument document;
     QJsonParseError ParseError;
     document =QJsonDocument::fromJson(result.toUtf8(),&ParseError);

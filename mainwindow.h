@@ -6,8 +6,9 @@
 #include <QObject>
 #include <QtNetwork>
 #include "mycontroller.h"
-#include "alertdialog.h"
+//#include "alertdialog.h"
 #include <QKeyEvent>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -62,11 +63,15 @@ private:
     bool ready_for_current;
 
     bool manage_opened;
+
+    int current_count;
+
+    QTimer timer;
     QMutex start_mutex;
     QMutex check_mutex;
     QMutex message_mutex;
     QMutex manage_mutex;
-    AlertDialog *alert;
+    //AlertDialog *alert;
 
     MyController *control;
 

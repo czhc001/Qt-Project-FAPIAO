@@ -113,9 +113,9 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>510</y>
+      <y>520</y>
       <width>120</width>
-      <height>40</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -130,8 +130,8 @@
    <widget class="QLabel" name="label_invoicecode">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>460</y>
+      <x>330</x>
+      <y>510</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -148,8 +148,8 @@
    <widget class="QLabel" name="label_invoiceno">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>500</y>
+      <x>330</x>
+      <y>550</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -294,8 +294,8 @@
    <widget class="QLineEdit" name="lineEdit_coderesult">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>460</y>
+      <x>440</x>
+      <y>510</y>
       <width>331</width>
       <height>31</height>
      </rect>
@@ -309,8 +309,8 @@
    <widget class="QLineEdit" name="lineEdit_noresult">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>500</y>
+      <x>440</x>
+      <y>550</y>
       <width>331</width>
       <height>31</height>
      </rect>
@@ -324,10 +324,10 @@
    <widget class="QPushButton" name="Button_check">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>590</y>
+      <x>786</x>
+      <y>521</y>
       <width>120</width>
-      <height>40</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -337,30 +337,6 @@
     </property>
     <property name="text">
      <string>合规检测</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_result">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>540</y>
-      <width>331</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_hint">
@@ -379,6 +355,93 @@
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_result">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>590</y>
+      <width>331</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>17</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_no_0">
+    <property name="geometry">
+     <rect>
+      <x>506</x>
+      <y>460</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>17</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_no">
+    <property name="geometry">
+     <rect>
+      <x>563</x>
+      <y>459</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>17</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_no_1">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>460</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>17</pointsize>
+     </font>
     </property>
     <property name="text">
      <string/>
