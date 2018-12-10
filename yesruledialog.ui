@@ -177,9 +177,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_hint">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>59</x>
      <y>180</y>
-     <width>240</width>
+     <width>381</width>
      <height>31</height>
     </rect>
    </property>

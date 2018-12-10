@@ -18,8 +18,9 @@ QOcr::QOcr()
     QByteArray ba1 = modelpath1.toLocal8Bit();
     char * p0 = ba0.data();
     char * p1 = ba1.data();
-    qDebug() << "std0" << p0;
-    qDebug() << "std1" << p1;
+    //qDebug() << "std0" << p0;
+    //qDebug() << "std1" << p1;
+    //qDebug() << "1" << "2";
     set_modelpath0(p0);
     set_modelpath1(p1);
 }

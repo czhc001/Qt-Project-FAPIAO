@@ -49,6 +49,9 @@
      <pointsize>8</pointsize>
     </font>
    </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_username">
    <property name="geometry">

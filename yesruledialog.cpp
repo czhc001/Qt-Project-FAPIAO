@@ -15,6 +15,9 @@ YesruleDialog::YesruleDialog(int userid, int versionid, QString code, QString no
     this->no = no;
     ui->label_code->setText(code);
     ui->label_no->setText(no);
+
+    setTabOrder(ui->textEdit, ui->Button_no);
+    setTabOrder(ui->Button_no, ui->Button_yes);
 }
 
 YesruleDialog::~YesruleDialog()

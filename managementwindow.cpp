@@ -253,3 +253,10 @@ void ManagementWindow::hid(){
     ui->tableView_userInfo->setColumnHidden(ID_COLUMN,true);
     //ui->tableView_userInfo->setColumnHidden(PASSWORDS_COLUMN,true);
 }
+
+void ManagementWindow::closeEvent(QCloseEvent *)
+{
+    //|窗口关闭之前需要的操作~
+    emit windowClosed();
+}
+

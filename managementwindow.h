@@ -31,6 +31,9 @@ private slots:
     void on_Button_modify_clicked();
     void on_Yes_Remove();
 
+protected:
+    void closeEvent(QCloseEvent *);
+
 private:
     Ui::ManagementWindow *ui;
     AddUserDialog * addUserDialog;
@@ -47,6 +50,9 @@ private:
     const int PASSWORDS_COLUMN = 2;
     RRDialog *rdialog;
     void hid();
+
+signals:
+    void windowClosed();
 
 };
 

@@ -9,6 +9,7 @@
 //#include "alertdialog.h"
 #include <QKeyEvent>
 #include <QTimer>
+#include <managementwindow.h>
 
 namespace Ui {
 class MainWindow;
@@ -46,6 +47,10 @@ private slots:
 
     void on_lineEdit_serialnumber_returnPressed();
 
+    void on_lineEdit_manage_returnPressed();
+
+    void on_lineEdit_department_returnPressed();
+
 private:
     Ui::MainWindow *ui;
     int userid;
@@ -58,7 +63,6 @@ private:
     QList<QImage *> image_list;
     bool isRunning;
     bool checking_current;
-    bool new_message;
     bool unstablePassed;
     bool ready_for_current;
 
@@ -74,6 +78,7 @@ private:
     //AlertDialog *alert;
 
     MyController *control;
+    ManagementWindow * managementWindow;
 
     void initializa_UI();
     void stop();

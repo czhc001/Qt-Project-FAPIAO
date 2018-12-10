@@ -36,8 +36,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     ui->label_no_0->setVisible(false);
     ui->label_no_1->setVisible(false);
     QDateTime dateTime = QDateTime::currentDateTime();
-    QRegExp wx_code("[0-9]{12} ");
-    QRegExp wx_no("[0-9]{8} ");
+    QRegExp wx_code("[0-9]{12}");
+    QRegExp wx_no("[0-9]{8}");
     QRegExpValidator *latitude = new QRegExpValidator(wx_code, this);
     QRegExpValidator *latitude_ = new QRegExpValidator(wx_no, this);
     ui->lineEdit_coderesult->setValidator(latitude);
@@ -76,13 +76,11 @@ void MainWindow::initializa_UI(){
     palette.setColor(QPalette::Background, QColor(25,25,25));
     palette.setColor(QPalette::WindowText, QColor(220,220,220));
     ui->label_image->setPalette(palette);
-    QFont font("Microsoft YaHei", 40, 50);
+    QFont font("Microsoft YaHei", 25, 50);
     ui->label_image->setFont(font);
 
-    QPalette palette0;
-    palette0.setColor(QPalette::WindowText, Qt::green);
+
     QFont font0("Microsoft YaHei", 17, 10);
-    ui->label_result->setPalette(palette0);
     ui->label_result->setFont(font0);
 
     setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
@@ -95,16 +93,32 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev){
         if(ui->Button_check->isEnabled())
             on_Button_check_clicked();
     }
+    else if(ev->key() == Qt::Key_M){
+        if(ui->Button_manage->isEnabled())
+            on_Button_manage_clicked();
+    }
+    else if(ev->key() == Qt::Key_Return){
+        if(ui->lineEdit_coderesult->hasFocus() && ui->lineEdit_coderesult->text().size() == 12)
+            ui->lineEdit_noresult->setFocus();
+        else if(ui->lineEdit_noresult->hasFocus() && ui->lineEdit_noresult->text().size() == 8)
+            on_Button_check_clicked();
+    }
 }
 
 void MainWindow::on_Button_manage_clicked()
 {
     QMutexLocker locker(&manage_mutex);
     if(!manage_opened){
-        ManagementWindow * managementWindow = new ManagementWindow(userid, permissionid);
-        connect(managementWindow, SIGNAL(closed()), this, SLOT(on_Manage_Closed()));
+        managementWindow = new ManagementWindow(userid, permissionid);
+        connect(managementWindow, SIGNAL(windowClosed()), this, SLOT(on_Manage_Closed()));
         managementWindow->show();
         manage_opened = true;
+    }
+    else{
+        if(managementWindow != nullptr){
+            managementWindow->activateWindow();
+            managementWindow->raise();
+        }
     }
 }
 
@@ -118,15 +132,15 @@ void MainWindow::on_Button_start_clicked()
 
     if(!isRunning){
         if(ui->lineEdit_department->text().isEmpty() || ui->lineEdit_manage->text().isEmpty() || ui->lineEdit_serialnumber->text().isEmpty()){
-            ui->label_hint->setText(QString::fromLocal8Bit("请填写上方信息后开始"));
+            ui->label_hint->setText(QString::fromLocal8Bit("请补全信息"));
             return;
         }
         if(ui->lineEdit_manage->text().size() > 20){
-            ui->label_hint->setText(QString::fromLocal8Bit("经办人名字过长"));
+            ui->label_hint->setText(QString::fromLocal8Bit("经办人名过长"));
             return;
         }
         if(ui->lineEdit_department->text().size() > 20){
-            ui->label_hint->setText(QString::fromLocal8Bit("部门名字过长"));
+            ui->label_hint->setText(QString::fromLocal8Bit("部门名过长"));
             return;
         }
         if(ui->lineEdit_serialnumber->text().size() > 20){
@@ -162,7 +176,7 @@ void MainWindow::on_Button_start_clicked()
         ui->lineEdit_manage->setEnabled(false);
         ui->dateEdit->setEnabled(false);
         ui->Button_start->setText(QString::fromLocal8Bit("结  束"));
-        ui->label_image->setText(QString::fromLocal8Bit("初始化中"));
+        ui->label_image->setText(QString::fromLocal8Bit("  初始化中..."));
     }
     else{
         qDebug() << "STOP";
@@ -179,9 +193,8 @@ void MainWindow::on_New_Message(QString message0, QString message1, QPixmap imag
     if(ready_for_current){
         ui->label_image->setPixmap(image);
         //qDebug() << isRunning << " " << " " << stable << " " << unstablePassed;
-        if(isRunning && stable && unstablePassed){                 //如果正在运行 且 结果稳定
-                new_message = true;                         //开始处理当前数据，处理完后才能开始下一次处理
-                ready_for_current = false;
+        if(isRunning && stable && unstablePassed){                  //如果正在运行 且 结果稳定
+                ready_for_current = false;                          //开始处理当前数据，处理完后才能开始下一次处理
                 current_code = message0;
                 current_no = message1;
                 ui->lineEdit_coderesult->setText(current_code);
@@ -256,7 +269,10 @@ void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no
     //alert->setModal(true);
     //alert->show();
 
-    ui->label_result->setText(QString::fromLocal8Bit("合  格"));
+    QPalette palette0;
+    palette0.setColor(QPalette::WindowText, Qt::green);
+    ui->label_result->setPalette(palette0);
+    ui->label_result->setText(QString::fromLocal8Bit("合  规"));
     ++current_count;
     timer.setSingleShot(true);
     connect(&timer, SIGNAL(timeout()), this, SLOT(on_AlertClosed()));
@@ -346,16 +362,18 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
 
 void MainWindow::on_Button_check_clicked(){
     QMutexLocker locker(&check_mutex);
-    if(isRunning && !checking_current && new_message){
+    if(isRunning && !checking_current){
         current_code = ui->lineEdit_coderesult->text();
         current_no = ui->lineEdit_noresult->text();
         if(current_code.size() != 12 || current_no.size() != 8){
-            ui->label_result->setText(QString::fromLocal8Bit("请输入正确的发票代码与号码"));
+            QPalette palette0;
+            palette0.setColor(QPalette::WindowText, Qt::red);
+            ui->label_result->setPalette(palette0);
+            ui->label_result->setText(QString::fromLocal8Bit("发票代码或号码格式错误"));
             return;
         }
         ui->label_result->setText("");
         checking_current = true;
-        new_message = false;
         ui->Button_check->setEnabled(false);
         ui->Button_check->setText(QString::fromLocal8Bit("检测中"));
         ui->lineEdit_coderesult->setEnabled(false);
@@ -382,24 +400,39 @@ void MainWindow::on_Button_check_clicked(){
 
 void MainWindow::on_lineEdit_coderesult_editingFinished()
 {
+    return;
+    qDebug() << "EF0";
     if(isRunning  && ! checking_current){
-        new_message = true;
         current_code = ui->lineEdit_coderesult->text();
+        if(ui->lineEdit_coderesult->hasFocus())
+            ui->lineEdit_noresult->setFocus();
     }
 }
 
 void MainWindow::on_lineEdit_noresult_editingFinished()
 {
+    return;
+    qDebug() << "EF1";
     if(isRunning  && ! checking_current){
-        new_message = true;
         current_no = ui->lineEdit_noresult->text();
+        if(ui->lineEdit_noresult->hasFocus())
+            on_Button_check_clicked();
     }
 }
-
-
-
 
 void MainWindow::on_lineEdit_serialnumber_returnPressed()
 {
     on_Button_start_clicked();
+}
+
+void MainWindow::on_lineEdit_manage_returnPressed()
+{
+    if(ui->lineEdit_manage->text().size() > 0)
+        ui->lineEdit_department->setFocus();
+}
+
+void MainWindow::on_lineEdit_department_returnPressed()
+{
+    if(ui->lineEdit_department->text().size() > 0)
+        ui->lineEdit_serialnumber->setFocus();
 }

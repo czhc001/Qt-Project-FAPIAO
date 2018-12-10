@@ -71,6 +71,8 @@ void LoginWindow::replyFinished(QNetworkReply* reply)
     QByteArray data = reply->readAll();
     QString result = QString::fromStdString(data.toStdString()).toUtf8();
     qDebug() << "login result: "<< result;
+    //MainWindow * mainwindow = new MainWindow(1, 1, "username");
+    //mainwindow->show();
     QJsonDocument document;
     QJsonParseError ParseError;
     document =QJsonDocument::fromJson(result.toUtf8(),&ParseError);

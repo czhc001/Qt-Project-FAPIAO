@@ -36,7 +36,6 @@ SOURCES += \
     mycontroller.cpp \
     yesruledialog.cpp \
     rrdialog.cpp \
-    run.cpp \
     qocr.cpp
 
 HEADERS += \
@@ -51,7 +50,9 @@ HEADERS += \
     rrdialog.h \
     run.h \
     head.h \
-    qocr.h
+    qocr.h \
+    head.h \
+    run.h
 
 
 INCLUDEPATH += "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
@@ -71,34 +72,90 @@ INCLUDEPATH += "D:\Caffe\caffe\include\caffe"
 INCLUDEPATH += "D:\Caffe\caffe\include"
 
 
-LIBS += -L$$PWD/lib -lopencv_calib3d2410
-LIBS += -L$$PWD/lib -lopencv_contrib2410
-LIBS += -L$$PWD/lib -lopencv_core2410
-LIBS += -L$$PWD/lib -lopencv_features2d2410
-LIBS += -L$$PWD/lib -lopencv_flann2410
-LIBS += -L$$PWD/lib -lopencv_gpu2410
-LIBS += -L$$PWD/lib -lopencv_highgui2410
-LIBS += -L$$PWD/lib -lopencv_imgproc2410
-LIBS += -L$$PWD/lib -lopencv_legacy2410
-LIBS += -L$$PWD/lib -lopencv_ml2410
-LIBS += -L$$PWD/lib -lopencv_objdetect2410
-LIBS += -L$$PWD/lib -lopencv_ts2410
-LIBS += -L$$PWD/lib -lopencv_video2410
-LIBS += -L$$PWD/lib -lcaffe
-LIBS += -L$$PWD/lib -llibcaffe
-LIBS += -L$$PWD/lib -llibglog
-LIBS += -L$$PWD/lib -lgflags
-LIBS += -L$$PWD/lib libopenblas.dll.a
-LIBS += -L$$PWD/lib -llibprotobuf
-LIBS += -L$$PWD/lib -lleveldb
-LIBS += -L$$PWD/lib -llmdb
-LIBS += -L$$PWD/lib -lhdf5
-LIBS += -L$$PWD/lib -lhdf5_hl
-LIBS += -L$$PWD/lib -llibboost_date_time-vc120-mt-1_59
-LIBS += -L$$PWD/lib -llibboost_filesystem-vc120-mt-1_59
-LIBS += -L$$PWD/lib -llibboost_system-vc120-mt-1_59
-LIBS += -L$$PWD/lib -llibboost_thread-vc120-mt-1_59
-LIBS += -L$$PWD/lib -llibboost_chrono-vc120-mt-1_59
+#LIBS += -L$$PWD/lib -lopencv_calib3d2410
+#LIBS += -L$$PWD/lib -lopencv_contrib2410
+#LIBS += -L$$PWD/lib -lopencv_core2410
+#LIBS += -L$$PWD/lib -lopencv_features2d2410
+#LIBS += -L$$PWD/lib -lopencv_flann2410
+#LIBS += -L$$PWD/lib -lopencv_gpu2410
+#LIBS += -L$$PWD/lib -lopencv_highgui2410
+#LIBS += -L$$PWD/lib -lopencv_imgproc2410
+#LIBS += -L$$PWD/lib -lopencv_legacy2410
+#LIBS += -L$$PWD/lib -lopencv_ml2410
+#LIBS += -L$$PWD/lib -lopencv_objdetect2410
+#LIBS += -L$$PWD/lib -lopencv_ts2410
+#LIBS += -L$$PWD/lib -lopencv_video2410
+#LIBS += -L$$PWD/lib -lcaffe
+#LIBS += -L$$PWD/lib -llibcaffe
+#LIBS += -L$$PWD/lib -llibglog
+#LIBS += -L$$PWD/lib -lgflags
+#LIBS += -L$$PWD/lib libopenblas.dll.a
+#LIBS += -L$$PWD/lib -llibprotobuf
+#LIBS += -L$$PWD/lib -lleveldb
+#LIBS += -L$$PWD/lib -llmdb
+#LIBS += -L$$PWD/lib -lhdf5
+#LIBS += -L$$PWD/lib -lhdf5_hl
+#LIBS += -L$$PWD/lib -llibboost_date_time-vc120-mt-1_59
+#LIBS += -L$$PWD/lib -llibboost_filesystem-vc120-mt-1_59
+#LIBS += -L$$PWD/lib -llibboost_system-vc120-mt-1_59
+#LIBS += -L$$PWD/lib -llibboost_thread-vc120-mt-1_59
+#LIBS += -L$$PWD/lib -llibboost_chrono-vc120-mt-1_59
+
+LIBS += -L$$PWD/lib32 -lopencv_calib3d2410
+LIBS += -L$$PWD/lib32 -lopencv_contrib2410
+LIBS += -L$$PWD/lib32 -lopencv_core2410
+LIBS += -L$$PWD/lib32 -lopencv_features2d2410
+LIBS += -L$$PWD/lib32 -lopencv_flann2410
+LIBS += -L$$PWD/lib32 -lopencv_gpu2410
+LIBS += -L$$PWD/lib32 -lopencv_highgui2410
+LIBS += -L$$PWD/lib32 -lopencv_imgproc2410
+LIBS += -L$$PWD/lib32 -lopencv_legacy2410
+LIBS += -L$$PWD/lib32 -lopencv_ml2410
+LIBS += -L$$PWD/lib32 -lopencv_objdetect2410
+LIBS += -L$$PWD/lib32 -lopencv_ts2410
+LIBS += -L$$PWD/lib32 -lopencv_video2410
+LIBS += -L$$PWD/lib32 -lcaffe
+LIBS += -L$$PWD/lib32 -llibcaffe
+LIBS += -L$$PWD/lib32 -llibglog
+LIBS += -L$$PWD/lib32 -lgflags
+LIBS += -L$$PWD/lib32 libopenblas.dll.a
+LIBS += -L$$PWD/lib32 -llibprotobuf
+LIBS += -L$$PWD/lib32 -lleveldb
+LIBS += -L$$PWD/lib32 -llmdb
+LIBS += -L$$PWD/lib32 -lhdf5
+LIBS += -L$$PWD/lib32 -lhdf5_hl
+LIBS += -L$$PWD/lib32 -locr_test
+
+#LIBS += -L$$PWD/lib32 -llibboost_date_time-vc120-mt-1_59
+#LIBS += -L$$PWD/lib32 -llibboost_filesystem-vc120-mt-1_59
+#LIBS += -L$$PWD/lib32 -llibboost_system-vc120-mt-1_59
+#LIBS += -L$$PWD/lib32 -llibboost_thread-vc120-mt-1_59
+#LIBS += -L$$PWD/lib32 -llibboost_chrono-vc120-mt-1_59
+
+#opencv_calib3d2410.lib
+#opencv_contrib2410.lib
+#opencv_core2410.lib
+#opencv_features2d2410.lib
+#opencv_flann2410.lib
+#opencv_gpu2410.lib
+#opencv_highgui2410.lib
+#opencv_imgproc2410.lib
+#opencv_legacy2410.lib
+#opencv_ml2410.lib
+#opencv_objdetect2410.lib
+#opencv_ts2410.lib
+#opencv_video2410.lib
+#caffe.lib
+#libcaffe.lib
+#libglog.lib
+#gflags.lib
+#libopenblas.dll.a
+#libprotobuf.lib
+#leveldb.lib
+#lmdb.lib
+#hdf5.lib
+#hdf5_hl.lib
+
 
 FORMS += \
     mainwindow.ui \
@@ -121,3 +178,9 @@ RESOURCES += \
     icon.qrc
 
 RC_ICONS = 512.ico
+
+win32 {
+QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+QMAKE_LFLAGS_CONSOLE = /SUBSYSTEM:CONSOLE,5.01
+}//完美解决
+
