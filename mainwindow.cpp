@@ -63,6 +63,8 @@ MainWindow::MainWindow(int userid, int permissionid, QString username, QWidget *
     ui->Button_manage->setFocusPolicy(Qt::NoFocus);
     ui->Button_start->setFocusPolicy(Qt::NoFocus);
 
+    timer.setSingleShot(true);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(on_AlertClosed()));
 }
 
 MainWindow::~MainWindow()
@@ -200,18 +202,18 @@ void MainWindow::on_New_Message(QString message0, QString message1, QPixmap imag
                 ui->lineEdit_coderesult->setText(current_code);
                 ui->lineEdit_noresult->setText(current_no);
                 unstablePassed = false;
-                if(!ui->lineEdit_coderesult->isEnabled())
-                    ui->lineEdit_coderesult->setEnabled(true);
-                if(!ui->lineEdit_noresult->isEnabled())
-                    ui->lineEdit_noresult->setEnabled(true);
+                //if(!ui->lineEdit_coderesult->isEnabled())
+                //    ui->lineEdit_coderesult->setEnabled(true);
+                //if(!ui->lineEdit_noresult->isEnabled())
+                //    ui->lineEdit_noresult->setEnabled(true);
                 ui->Button_check->setEnabled(true);
                 //qDebug() << 1;
         }
         else{                                               //如果未运行 或 结果不稳定
             ui->lineEdit_coderesult->setText("");
             ui->lineEdit_noresult->setText("");
-            ui->lineEdit_coderesult->setEnabled(false);
-            ui->lineEdit_noresult->setEnabled(false);
+            //ui->lineEdit_coderesult->setEnabled(false);
+            //ui->lineEdit_noresult->setEnabled(false);
             //qDebug() << 2;
         }
         if(!stable){
@@ -274,20 +276,19 @@ void MainWindow::on_Yes_Rule(int userid, int versionid, QString code, QString no
     ui->label_result->setPalette(palette0);
     ui->label_result->setText(QString::fromLocal8Bit("合  规"));
     ++current_count;
-    timer.setSingleShot(true);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(on_AlertClosed()));
-    timer.start(700);
+    timer.start(500);
 }
 
 
 void MainWindow::on_AlertClosed(){
+    timer.stop();
     ui->label_no->setText(QString::number(current_count));
     ui->label_result->clear();
     ui->Button_start->setEnabled(true);
     ui->Button_check->setText(QString::fromLocal8Bit("合规检测"));
     ui->Button_check->setEnabled(false);
-    //ui->lineEdit_coderesult->setEnabled(true);
-    //ui->lineEdit_noresult->setEnabled(true);
+    ui->lineEdit_coderesult->setEnabled(true);
+    ui->lineEdit_noresult->setEnabled(true);
     qDebug() << "on_AlertClosed";
     checking_current = false;
     ready_for_current = true;
@@ -312,6 +313,8 @@ void MainWindow::stop(){
     ui->Button_start->setEnabled(true);
     ui->lineEdit_noresult->setText("");
     ui->lineEdit_coderesult->setText("");
+    ui->lineEdit_coderesult->setEnabled(false);
+    ui->lineEdit_noresult->setEnabled(false);
 
     ui->label_no_0->setVisible(false);
     ui->label_no_1->setVisible(false);
@@ -348,6 +351,8 @@ void MainWindow::on_Begin_Reply(QNetworkReply* reply){
                         ui->label_no_1->setVisible(true);
                         ui->label_no->setText(QString::number(1));
                         ui->label_no->setVisible(true);
+                        ui->lineEdit_coderesult->setEnabled(true);
+                        ui->lineEdit_noresult->setEnabled(true);
                         control->start();
                     }
                     else if(dataObj.isBool()){
