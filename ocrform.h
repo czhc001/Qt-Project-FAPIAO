@@ -25,8 +25,8 @@ class OCRForm : public QWidget
 public:
     explicit OCRForm(int userid, int permissionid, QString username, QWidget *parent = 0);
     ~OCRForm();
-    void stop();
     void complete();
+    void releaseRes();
 
 protected:
     void keyReleaseEvent(QKeyEvent *);
@@ -67,6 +67,7 @@ private:
 
     void initializa_UI();
     void checkstart();
+    void stop();
 
 
     QStackedLayout * stackedlayout;

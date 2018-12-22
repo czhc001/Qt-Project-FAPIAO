@@ -80,6 +80,8 @@ OCRForm::OCRForm(int userid, int permissionid, QString username, QWidget *parent
     ui->Button_continue->setFocusPolicy(Qt::NoFocus);
     timer.setSingleShot(true);
     connect(&timer, SIGNAL(timeout()), this, SLOT(on_AlertClosed()));
+
+    control->start();
 }
 
 OCRForm::~OCRForm()
@@ -108,6 +110,7 @@ void OCRForm::initializa_UI(){
     QPalette palette1;
     palette1.setColor(QPalette::WindowText, QColor(220,220,220));
     label_init->setPalette(palette1);
+    label_init->setText(QString::fromLocal8Bit("  初始化中..."));
 
     QPalette palette2;
     palette2.setColor(QPalette::WindowText, QColor(255,20,20));
@@ -283,8 +286,39 @@ void OCRForm::on_Error_Message(int a){
 
 void OCRForm::on_New_Message(QString message0, QString message1, QPixmap image, bool stable){
     QMutexLocker locker(&message_mutex);
-    if(!isRunning)
+    if(!isRunning){
+        /*
+        int label_image_height = label_image->contentsRect().size().height();
+        int label_image_width = label_image->contentsRect().size().width();
+        int img_height = image.size().height();
+        int img_width = image.size().width();
+        double label_hTw = (double)label_image_height/(double)label_image_width;
+        double img_hTw = (double)img_height/(double)img_width;
+
+        if( img_hTw > label_hTw){ //图像更窄,需要截取
+            int height_scaled = img_width * label_hTw;
+            int start_x = 0;
+            int start_y = (img_height - height_scaled)/2;
+            image = image.copy(start_x, start_y, img_width, height_scaled);
+            image = image.scaled(label_image->contentsRect().size(), Qt::KeepAspectRatio);
+        }
+        else{
+            //image = image.scaled(label_image->contentsRect().size(), Qt::KeepAspectRatio);
+        }
+        label_image->setPixmap(image);
+
+        */
+        if(ui->Button_continue->isEnabled())
+            ui->Button_continue->setEnabled(false);
+        if(ui->Button_continue->isVisible())
+            ui->Button_continue->setVisible(false);
+        if(!label_init->isVisible())
+            label_init->setVisible(true);
+        QString text = QString::fromLocal8Bit("  摄像头就绪，等待开始");
+        if(QString::compare(text, label_init->text(), Qt::CaseSensitive) != 0)
+            label_init->setText(text);
         return;
+    }
     if(label_camera_alert->isVisible())
         label_camera_alert->setVisible(false);
     if(label_init->isVisible())
@@ -462,19 +496,24 @@ void OCRForm::on_AlertClosed(){
     qDebug() << "on_AlertClosed";
     checking_current = false;
     ready_for_current = true;
-    isRunning = true;
+    //isRunning = true;
 }
 
 void OCRForm::on_No_Rule(int userid, int versionid, QString code, QString no){
     stop();
 }
 
+void OCRForm::releaseRes(){
+    if(control->isRunning())
+        control->stop();
+}
+
 void OCRForm::stop(){
-    control->stop();
+    //control->stop();
     qDebug() << "ocr stop";
     label_image->clear();
     label_init->setVisible(false);
-    label_camera_alert->setVisible(false);
+    //label_camera_alert->setVisible(false);
     ui->lineEdit_department->setEnabled(true);
     ui->lineEdit_serialnumber->setEnabled(true);
     ui->lineEdit_manage->setEnabled(true);
@@ -488,9 +527,8 @@ void OCRForm::stop(){
     ui->lineEdit_coderesult->setText("");
     ui->lineEdit_coderesult->setEnabled(false);
     ui->lineEdit_noresult->setEnabled(false);
-    label_camera_alert->setVisible(false);
-    ui->Button_continue->setEnabled(false);
-    ui->Button_continue->setVisible(false);
+    //ui->Button_continue->setEnabled(false);
+    //ui->Button_continue->setVisible(false);
 
     ui->label_no_0->setVisible(false);
     ui->label_no_1->setVisible(false);
@@ -622,7 +660,8 @@ void OCRForm::checkstart(){
     ui->Button_check->setEnabled(true);
     ui->lineEdit_coderesult->setEnabled(true);
     ui->lineEdit_noresult->setEnabled(true);
-    control->start();
+    if(!control->isRunning())
+        control->start();
 }
 
 

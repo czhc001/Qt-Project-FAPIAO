@@ -82,14 +82,14 @@ void MainWindow::keyPressEvent(QKeyEvent *ev){
 
 void MainWindow::closeEvent(QCloseEvent *event){
     if(ocrForm != nullptr){
-        ocrForm->stop();
-        event->accept();
+        ocrForm->releaseRes();
     }
+    event->accept();
 }
 
 void MainWindow::on_quit_confirm(){
     if(ocrForm != nullptr){
-        ocrForm->stop();
+        ocrForm->releaseRes();
     }
     close();
 }
