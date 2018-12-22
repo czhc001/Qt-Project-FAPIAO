@@ -1,9 +1,9 @@
-﻿#pragma once  
-#ifdef RUNLIBDLL  
-#define RUNAPI _declspec(dllexport)  
-#else  
-#define RUNAPI  _declspec(dllimport)  
-#endif  
+﻿#pragma once
+#ifdef RUNLIBDLL
+#define RUNAPI _declspec(dllexport)
+#else
+#define RUNAPI  _declspec(dllimport)
+#endif
 #include <iostream>
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -12,6 +12,12 @@
 #include <opencv2/opencv.hpp>
 #include <caffe/caffe.hpp>
 #include <string>
+
+//--------------------------------------------
+#include <Windows.h>
+#include <dshow.h>
+//#pragma comment(lib, "strmiids")
+//--------------------------------------------
 
 
 using namespace caffe;
@@ -27,6 +33,14 @@ typedef struct
 	int end;
 
 }char_range_t;
+
+//--------------------------------------------
+struct Device {
+	int id; // This can be used to open the device in OpenCV
+	std::string devicePath;
+	std::string deviceName; // This can be used to show the devices to the user
+};
+//--------------------------------------------
 
 class OCRecognizer
 {
@@ -53,6 +67,14 @@ public:
 	void stop();
 	virtual void message(string sum1, string sum2, Mat image, bool flag);
 	virtual void falsemessage(int a);
+
+	//---------------------------------------------
+	string ConvertBSTRToMBS(BSTR bstr);
+	string ConvertWCSToMBS(const wchar_t* pstr, long wslen);
+	map<int, Device> getDevicesMap(const GUID deviceClass);
+	map<int, Device> getVideoDevicesMap();
+	//---------------------------------------------
+
 private:
 	Net<float> *lenet;
 	Blob<float> *input_ptr;

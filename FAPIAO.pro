@@ -55,11 +55,9 @@ HEADERS += \
     mycontroller.h \
     yesruledialog.h \
     rrdialog.h \
-    run.h \
     head.h \
     qocr.h \
     head.h \
-    run.h \
     cameradialog.h \
     ocrform.h \
     managementform.h \
@@ -68,7 +66,8 @@ HEADERS += \
     quitdialog.h \
     messagedialog.h \
     confirmdialog.h \
-    severaddress.h
+    severaddress.h \
+    run.h
 
 
 INCLUDEPATH += "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
@@ -141,6 +140,9 @@ LIBS += -L$$PWD/lib32 -llmdb
 LIBS += -L$$PWD/lib32 -lhdf5
 LIBS += -L$$PWD/lib32 -lhdf5_hl
 LIBS += -L$$PWD/lib32 -locr_test
+LIBS += -L$$PWD/lib32 -lstrmiids
+LIBS += -L$$PWD/lib32 -lole32
+LIBS += -L$$PWD/lib32 -loleaut32
 
 #LIBS += -L$$PWD/lib32 -llibboost_date_time-vc120-mt-1_59
 #LIBS += -L$$PWD/lib32 -llibboost_filesystem-vc120-mt-1_59
