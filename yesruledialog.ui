@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>320</height>
+    <width>1046</width>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,85 +17,13 @@
    <iconset resource="icon.qrc">
     <normaloff>:/image/icon.png</normaloff>:/image/icon.png</iconset>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>30</y>
-     <width>110</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>发票代码：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>60</y>
-     <width>110</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>发票号码：</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_code">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>30</y>
-     <width>221</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_no">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>60</y>
-     <width>221</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="Button_yes">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>220</y>
-     <width>120</width>
-     <height>40</height>
+     <x>600</x>
+     <y>400</y>
+     <width>131</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
@@ -110,10 +38,10 @@
   <widget class="QTextEdit" name="textEdit">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>100</y>
-     <width>281</width>
-     <height>71</height>
+     <x>620</x>
+     <y>120</y>
+     <width>361</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="font">
@@ -132,8 +60,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>48</x>
-     <y>90</y>
+     <x>630</x>
+     <y>80</y>
      <width>110</width>
      <height>31</height>
     </rect>
@@ -159,10 +87,10 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="Button_no">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>220</y>
+     <x>760</x>
+     <y>400</y>
      <width>240</width>
-     <height>40</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
@@ -177,8 +105,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_hint">
    <property name="geometry">
     <rect>
-     <x>59</x>
-     <y>180</y>
+     <x>610</x>
+     <y>350</y>
      <width>381</width>
      <height>31</height>
     </rect>
@@ -196,6 +124,16 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>541</width>
+     <height>491</height>
+    </rect>
    </property>
   </widget>
  </widget>

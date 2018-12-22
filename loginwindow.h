@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QtNetwork>
-#include "mainwindow.h"
+#include "mainwindow_.h"
 #include "alertdialog.h"
 #include "managementwindow.h"
 

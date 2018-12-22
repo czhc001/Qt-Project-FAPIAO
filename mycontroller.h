@@ -27,9 +27,11 @@ private:
 
 signals:
     void Message(QString sum1,QString sum2, QPixmap image,bool flag);
+    void errorMessage(int a);
 
 private slots:
     void onMessage(QString sum1,QString sum2, QPixmap &image,bool flag);
+    void onErrorMessage(int a);
 };
 
 #endif // MYCONTROLLER_H

@@ -1,7 +1,7 @@
 ﻿#include "loginwindow.h"
 #include "ui_loginwindow.h"
-#include "mainwindow.h"
-
+#include "mainwindow_.h"
+#include "severaddress.h"
 LoginWindow::LoginWindow(QWidget *parent) :
     QMainWindow(parent),
 
@@ -16,6 +16,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
 
     setTabOrder(ui->lineEdit_username, ui->lineEdit_passwords);
     setTabOrder(ui->lineEdit_passwords, ui->loginButton);
+    SeverAddress::loadAddress();
 }
 
 
@@ -51,7 +52,7 @@ void LoginWindow::on_loginButton_clicked()
         this->username = username;
         QNetworkRequest request;
         QString url_str;
-        url_str.append("http://120.78.190.36:9601/login?username=");
+        url_str.append("http://" + SeverAddress::address + "/login?username=");
         url_str.append(username);
         url_str.append("&password=");
         url_str.append(passwords);

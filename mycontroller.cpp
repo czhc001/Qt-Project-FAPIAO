@@ -1,5 +1,6 @@
 #include "mycontroller.h"
 #include <QDebug>
+#include <severaddress.h>
 
 MyController::MyController()
 {
@@ -22,6 +23,10 @@ void MyController::onMessage(QString sum1,QString sum2, QPixmap &image,bool flag
     emit Message(sum1, sum2, image, flag);
 }
 
+void MyController::onErrorMessage(int a){
+    emit errorMessage(a);
+}
+
 void MyController::start(){
     QMutexLocker locker(&mutex);
     QThread::start();
@@ -32,8 +37,13 @@ void MyController::run(){
         qocr = new QOcr();
         qocr->setImageSize(this->imgsize);
         connect(qocr, SIGNAL(newMessage(QString, QString, QPixmap &, bool)), this, SLOT(onMessage(QString, QString, QPixmap &, bool)));
-        qocr->run();
+        connect(qocr, SIGNAL(errorMessage(int)), this, SLOT(onErrorMessage(int)));
     }
+    if(!qocr->isInitialized()){
+        qDebug() << "OCR Init";
+        qocr->init();
+    }
+    qocr->run();
 }
 
 void MyController::stop(){
@@ -41,8 +51,8 @@ void MyController::stop(){
     if(qocr != nullptr){
         qocr->stop();
         this->wait();
-        delete qocr;
-        qocr = nullptr;
+        //delete qocr;
+        //aqocr = nullptr;
     }
 }
 

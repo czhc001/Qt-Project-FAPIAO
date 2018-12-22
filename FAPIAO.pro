@@ -27,7 +27,6 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    mainwindow.cpp \
     loginwindow.cpp \
     alertdialog.cpp \
     managementwindow.cpp \
@@ -36,10 +35,18 @@ SOURCES += \
     mycontroller.cpp \
     yesruledialog.cpp \
     rrdialog.cpp \
-    qocr.cpp
+    qocr.cpp \
+    cameradialog.cpp \
+    ocrform.cpp \
+    managementform.cpp \
+    mainwindow.cpp \
+    ruleform.cpp \
+    quitdialog.cpp \
+    messagedialog.cpp \
+    confirmdialog.cpp \
+    severaddress.cpp
 
 HEADERS += \
-    mainwindow.h \
     loginwindow.h \
     alertdialog.h \
     managementwindow.h \
@@ -52,7 +59,16 @@ HEADERS += \
     head.h \
     qocr.h \
     head.h \
-    run.h
+    run.h \
+    cameradialog.h \
+    ocrform.h \
+    managementform.h \
+    mainwindow.h \
+    ruleform.h \
+    quitdialog.h \
+    messagedialog.h \
+    confirmdialog.h \
+    severaddress.h
 
 
 INCLUDEPATH += "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
@@ -158,14 +174,21 @@ LIBS += -L$$PWD/lib32 -locr_test
 
 
 FORMS += \
-    mainwindow.ui \
     loginwindow.ui \
     alertdialog.ui \
     managementwindow.ui \
     adduserdialog.ui \
     modifyuserdialog.ui \
     yesruledialog.ui \
-    rrdialog.ui
+    rrdialog.ui \
+    cameradialog.ui \
+    ocrform.ui \
+    managementform.ui \
+    mainwindow.ui \
+    ruleform.ui \
+    quitdialog.ui \
+    messagedialog.ui \
+    confirmdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -21,6 +21,7 @@ private:
     QImage MatToQImage(const cv::Mat& mat);
 signals:
     void newMessage(QString sum1,QString sum2, QPixmap &image,bool flag);
+    void errorMessage(int);
 
 };
 

@@ -1,5 +1,6 @@
 ﻿#include "modifyuserdialog.h"
 #include "ui_modifyuserdialog.h"
+#include <severaddress.h>
 
 ModifyUserDialog::ModifyUserDialog(int userid_manager, int userid, QString username, QWidget *parent) :
     QDialog(parent),

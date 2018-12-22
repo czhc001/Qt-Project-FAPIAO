@@ -39,12 +39,13 @@ void QOcr::message(string sum1,string sum2, Mat image,bool flag){
 
     QImage img = MatToQImage(image);
     QPixmap pimg = QPixmap::fromImage(img);
-    pimg = pimg.scaled(imgsize, Qt::KeepAspectRatio);
+    //pimg = pimg.scaled(imgsize, Qt::KeepAspectRatio);
     emit newMessage(m1, m2, pimg, flag);
 }
 
 void QOcr::falsemessage(int a){
     qDebug() << "OCR ERROR: " << a;
+    emit errorMessage(a);
 }
 
 void QOcr::setImageSize(QSize size){

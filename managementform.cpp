@@ -1,18 +1,18 @@
-﻿#include "managementwindow.h"
-#include "ui_managementwindow.h"
+﻿#include "managementform.h"
+#include "ui_managementform.h"
 #include "modifyuserdialog.h"
 #include "rrdialog.h"
 #include <QDebug>
 #include <QList>
 #include <severaddress.h>
 
-ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::ManagementWindow)
+ManagementForm::ManagementForm(int userid, int permissionid, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::ManagementForm)
 {
     //setAttribute(Qt::WA_DeleteOnClose);
-    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
-    setFixedSize(this->width(), this->height());
+    //setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    //setFixedSize(this->width(), this->height());
     this->userid = userid;
     this->permissionid = permissionid;
     ui->setupUi(this);
@@ -37,19 +37,19 @@ ManagementWindow::ManagementWindow(int userid, int permissionid, QWidget *parent
     queryAllUser();
 }
 
-ManagementWindow::~ManagementWindow()
+ManagementForm::~ManagementForm()
 {
     delete ui;
 }
 
-void ManagementWindow::on_Button_addUser_clicked()
+void ManagementForm::on_Button_addUser_clicked()
 {
     addUserDialog = new AddUserDialog(userid);
     connect(addUserDialog, SIGNAL(user_Added(QString)), this, SLOT(addedNewUser(QString)));
     addUserDialog->show();
 }
 
-void ManagementWindow::addedNewUser(QString username){
+void ManagementForm::addedNewUser(QString username){
     //qDebug() << "SLOT GOT  " <<username << ": " <<passwords;
     //QList<QStandardItem *> new_row;
     //new_row.append(new QStandardItem(username));
@@ -58,13 +58,13 @@ void ManagementWindow::addedNewUser(QString username){
     queryAllUser();
 }
 
-void ManagementWindow::deletedUser(QNetworkReply* reply){
+void ManagementForm::deletedUser(QNetworkReply* reply){
     QMutexLocker locker(&mutex);
     queryAllUser();
     delete reply;
 }
 
-void ManagementWindow::obtainAllUser(QNetworkReply* reply){
+void ManagementForm::obtainAllUser(QNetworkReply* reply){
     QByteArray data = reply->readAll();
     QString result = QString::fromStdString(data.toStdString()).toUtf8();
     qDebug() << result;
@@ -131,7 +131,7 @@ void ManagementWindow::obtainAllUser(QNetworkReply* reply){
     delete reply;
 }
 
-void ManagementWindow::queryAllUser(){
+void ManagementForm::queryAllUser(){
     QString url_str;
     QNetworkRequest request;
     url_str.append("http://" + SeverAddress::address + "/alluser?userid=");
@@ -146,7 +146,7 @@ void ManagementWindow::queryAllUser(){
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(obtainAllUser(QNetworkReply*)));
 }
 
-void ManagementWindow::on_Yes_Remove(){
+void ManagementForm::on_Yes_Remove(){
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndex current_index = smodel->currentIndex();
     QString selected_username = dataModel->index(current_index.row(), USERNAME_COLUMN).data().toString();
@@ -177,7 +177,7 @@ void ManagementWindow::on_Yes_Remove(){
     //delete rdialog;
 }
 
-void ManagementWindow::on_Button_deleteUser_clicked()
+void ManagementForm::on_Button_deleteUser_clicked()
 {
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndex current_index = smodel->currentIndex();
@@ -213,11 +213,11 @@ void ManagementWindow::on_Button_deleteUser_clicked()
     */
 }
 
-void ManagementWindow::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & previous){
+void ManagementForm::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & previous){
 
 }
 
-void ManagementWindow::tryDeleteUser(int userid_todelete){
+void ManagementForm::tryDeleteUser(int userid_todelete){
     QNetworkRequest request;
     QString url_str;
     url_str.append("http://" + SeverAddress::address + "/deleteuser?userid=");
@@ -231,7 +231,7 @@ void ManagementWindow::tryDeleteUser(int userid_todelete){
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(deletedUser(QNetworkReply*)));
 }
 
-void ManagementWindow::on_Button_modify_clicked()
+void ManagementForm::on_Button_modify_clicked()
 {
     QItemSelectionModel *smodel = ui->tableView_userInfo->selectionModel();
     QModelIndex current_index = smodel->currentIndex();
@@ -245,19 +245,14 @@ void ManagementWindow::on_Button_modify_clicked()
     modifyUserDialog->show();
 }
 
-void ManagementWindow::modifiedUser(QString username){
+void ManagementForm::modifiedUser(QString username){
     queryAllUser();
 }
 
-void ManagementWindow::hid(){
+void ManagementForm::hid(){
     ui->tableView_userInfo->setColumnHidden(PERMISSIONID_COLUMN,true);
     ui->tableView_userInfo->setColumnHidden(ID_COLUMN,true);
     //ui->tableView_userInfo->setColumnHidden(PASSWORDS_COLUMN,true);
 }
 
-void ManagementWindow::closeEvent(QCloseEvent *)
-{
-    //|窗口关闭之前需要的操作~
-    emit windowClosed();
-}
 

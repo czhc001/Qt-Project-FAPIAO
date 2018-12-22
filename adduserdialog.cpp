@@ -1,6 +1,7 @@
 ﻿#include "adduserdialog.h"
 #include "ui_adduserdialog.h"
 #include <QDebug>
+#include <severaddress.h>
 //的撒大
 AddUserDialog::AddUserDialog(int userid, QWidget *parent) :
     QDialog(parent),
@@ -42,7 +43,7 @@ void AddUserDialog::on_regButton_clicked()
         ui->label_hint->setText(QString::fromLocal8Bit("注册中"));
         QNetworkRequest request;
         QString url_str;
-        url_str.append("http://120.78.190.36:9601/adduser?userid=");
+        url_str.append("http://" + SeverAddress::address + "/adduser?userid=");
         url_str.append(QString::number(userid));
         url_str.append("&username=");
         url_str.append(username);

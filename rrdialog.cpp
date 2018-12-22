@@ -1,5 +1,6 @@
 #include "rrdialog.h"
 #include "ui_rrdialog.h"
+#include <severaddress.h>
 
 RRDialog::RRDialog(QString username, QWidget *parent) :
     QDialog(parent),

@@ -42,6 +42,8 @@ public:
 	vector<Mat> CutSingleLine(Mat& img);
 	vector<Mat> CutSingleChar(vector<Mat> lines_set);
 	void draw_border(Mat image, int up, int bottom, int left, int right, int middle, int ll);
+	void init();
+	bool isInitialized();
 	void run();
 	void set_modelpath0(char* modelpath0);
 	void set_modelpath1(char* modelpath1);
@@ -51,5 +53,9 @@ public:
 	void stop();
 	virtual void message(string sum1, string sum2, Mat image, bool flag);
 	virtual void falsemessage(int a);
-
+private:
+	Net<float> *lenet;
+	Blob<float> *input_ptr;
+	Blob<float> *output_ptr;
+	bool model_loaded;
 };
